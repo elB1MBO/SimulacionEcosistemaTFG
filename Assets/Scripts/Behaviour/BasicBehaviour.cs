@@ -75,7 +75,7 @@ public class BasicBehaviour : MonoBehaviour
     {
         if(actualTarget != null)
         {
-            Destroy(actualTarget);
+            //Destroy(actualTarget);
             GetClosestTarget();
         }
     }
