@@ -6,34 +6,36 @@ public class BasicBehaviour : MonoBehaviour
 {
     //public int sense = 5;
 
-    //Settings
-    float movSpeed = 1.0f;
-    float rotateSpeed = 1.0f;
-
     public string targetTag = "Food";
 
     public GameObject[] allTargets;
     public GameObject actualTarget;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        allTargets = GameObject.FindGameObjectsWithTag(targetTag);
-    }
+   
+    //Settings
+    [SerializeField]
+    float movSpeed = 1.0f;
+    float rotateSpeed = 1.0f;
+    float minDist = Mathf.Infinity;
 
     // Update is called once per frame
     void Update()
     {
+        allTargets = GameObject.FindGameObjectsWithTag(targetTag);
         GetClosestTarget();
-        print(actualTarget.name);
-        LookAt(actualTarget);
-        MoveAt(actualTarget);
+        if(actualTarget != null)
+        {
+            print(actualTarget.name);
+            LookAt(actualTarget);
+            MoveAt(actualTarget);
+        } else
+        {
+            actualTarget = allTargets[0];
+        }
     }
 
     void GetClosestTarget()
     {
-        float minDist = Mathf.Infinity;
-
+       
         foreach (GameObject target in allTargets)
         {
             float distance = Vector3.Distance(transform.position, target.transform.position);
@@ -75,8 +77,7 @@ public class BasicBehaviour : MonoBehaviour
     {
         if(actualTarget != null)
         {
-            //Destroy(actualTarget);
-            GetClosestTarget();
+            Destroy(actualTarget);
         }
     }
 }
