@@ -29,7 +29,8 @@ public class BasicBehaviour : MonoBehaviour
             MoveAt(actualTarget);
         } else
         {
-            actualTarget = allTargets[0];
+            GameObject actualTarget;
+            GetClosestTarget();
         }
     }
 
@@ -39,7 +40,7 @@ public class BasicBehaviour : MonoBehaviour
         foreach (GameObject target in allTargets)
         {
             float distance = Vector3.Distance(transform.position, target.transform.position);
-            if(distance < minDist)
+            if(distance < minDist && target != null)
             {
                 minDist = distance;
                 actualTarget = target;
