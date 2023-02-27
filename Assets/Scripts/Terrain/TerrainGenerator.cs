@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Terrain{
-
+[ExecuteInEditMode]
 public class TerrainGenerator : MonoBehaviour
 {
-    public static string name;
+    public static string name = "Terrain Mesh";
+    
     public float worldSize;
     public float waterDepth = .3f;
     public float edgeDepth = .2f;
@@ -15,34 +16,44 @@ public class TerrainGenerator : MonoBehaviour
     public Biome sand;
     public Biome water;
 
-    [ShowInExplorer]
+    [Header("Info")]
     int totalTiles;
     int landTiles;
     int waterTiles;
     float waterProb = .2f;
 
+    Mesh mesh;
+    MeshFilter meshFilter;
+    MeshRenderer meshRenderer;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    //Genera el terreno, asignando sus propiedades
-    public TerrainProps Generate()
-    {
-
-    }
+    bool needsUpdate = true;
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(needsUpdate){
+            needsUpdate = false;
+            Generate();
+        } else {
+            UpdateColors();
+        }       
     }
 
-    public Biome GetBiomeInfo(float height, List<Biome> biomes)
-    {
 
+    //Genera el terreno, asignando sus propiedades
+    public void Generate()
+    {
+        var biomes = new Biome[] {grass, water, sand};
+    }
+
+    public Biome GetBiomeByHeight(float height, List<Biome> biomes)
+    {
+        foreach (Biome biome in biomes)
+        {
+            if(biome.height == height){
+                return biome;
+            }
+        }
     }
 
     public void CreateMeshComponents()
