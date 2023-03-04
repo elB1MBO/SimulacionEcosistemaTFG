@@ -66,7 +66,11 @@ namespace Terrain
                     int colorIndex = z * width + x;
                     float height = heightMap[z,x];
                     //Este primer mapa será una escala de grises
-                    colorMap[colorIndex] = Color.Lerp(Color.black, Color.white, height);
+                    //colorMap[colorIndex] = Color.Lerp(Color.black, Color.white, height);
+
+                    //Usando los tipos de terreno
+                    TerrainType terrainType = GetTerrainType(height);
+                    colorMap[colorIndex] = terrainType.color;
                 }
             }
 
@@ -77,6 +81,15 @@ namespace Terrain
             terrainTexture.Apply();
 
             return terrainTexture;
+        }
+        TerrainType GetTerrainType(float height)
+        {
+            foreach (TerrainType type in terrainTypes)
+            {
+                if(height < type.height) return type;
+            }
+            //Devuelve el último tipo que debería ser el más alto
+            return terrainTypes[terrainTypes.Length - 1];
         }
     }
 
