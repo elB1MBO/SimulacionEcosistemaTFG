@@ -215,7 +215,7 @@ Transform:
   m_GameObject: {fileID: 23487517}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 1, z: 3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -581,6 +581,87 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+--- !u!1 &1823639582
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1823639583}
+  - component: {fileID: 1823639585}
+  - component: {fileID: 1823639584}
+  - component: {fileID: 1823639586}
+  m_Layer: 0
+  m_Name: TerrainGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1823639583
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823639582}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.9313498, y: -4.565862, z: 1.4070191}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1823639584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823639582}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5aed3147d1debe4898ca2c4440fbd51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xSize: 20
+  zSize: 20
+--- !u!33 &1823639585
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823639582}
+  m_Mesh: {fileID: 0}
+--- !u!114 &1823639586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823639582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcdf13753f5412541b97e41b3c09e001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrainMaterial: {fileID: 2100000, guid: 40befe29a71169f4f943cd6da53d49f6, type: 2}
+  edgeMaterial: {fileID: 2100000, guid: 6c8583e248b49f8418530b25345a304e, type: 2}
+  treePrefabs:
+  - {fileID: 1335726306580732, guid: 23f312332b5cd5542ba196450880e89b, type: 3}
+  plantsPrefabs:
+  - {fileID: 1882622956474992, guid: 10fd3a2d8f546df4f8af19c411a0f42e, type: 3}
+  size: 150
+  waterLevel: 0.35
+  scale: 0.1
+  treeNoiseScale: 0.005
+  treeDensity: 0.01
+  plantsNoiseScale: 0.05
+  plantsDensity: 0.35
 --- !u!1 &2103761576
 GameObject:
   m_ObjectHideFlags: 0
