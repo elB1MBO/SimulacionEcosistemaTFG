@@ -4,17 +4,6 @@ using UnityEngine;
 
 public class NoiseMap : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     /// <summary>
     /// Genera una matriz que representa el noise map, con el ruido en cada coordenada

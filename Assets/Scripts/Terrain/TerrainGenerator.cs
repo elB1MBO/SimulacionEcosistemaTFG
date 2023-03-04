@@ -3,72 +3,89 @@ using UnityEngine;
 
 namespace Terrain
 {
-    [ExecuteInEditMode]
+
     public class TerrainGenerator : MonoBehaviour
     {
-        public static string name = "Terrain Mesh";
+        /// <summary>
+        /// noiseMap: script que genera el height o noise map
+        /// meshRenderer: necesario para ver el height map
+        /// meshFilter: componente necesario para acceder a los vertices del mesh
+        /// collider: componente collider del mesh, necesario para las colisiones
+        /// scale: escala del height map
+        /// terrainTypes: tipos de terreno que tenemos
+        /// </summary>
+        ///             
+        [SerializeField] NoiseMap noiseMap;
+        [SerializeField] MeshRenderer meshRenderer;
+        [SerializeField] MeshFilter meshFilter;
+        [SerializeField] MeshCollider collider;
+        [SerializeField] float scale;
+        [SerializeField] TerrainType[] terrainTypes;
 
-        public float worldSize;
-        public float waterDepth = .3f;
-        public float edgeDepth = .2f;
-
-        public Biome land;
-        public Biome water;
-
-        [Header("Info")]
-        int totalTiles;
-        int landTiles;
-        int waterTiles;
-        float waterProb = .2f;
-
-        Mesh mesh;
-        MeshFilter meshFilter;
-        MeshRenderer meshRenderer;
-
-        bool needsUpdate = true;
-
-        // Update is called once per frame
-        void Update()
+        void Start()
         {
-            if (needsUpdate)
-            {
-                needsUpdate = false;
-                Generate();
-            }
-            else
-            {
-                UpdateColors();
-            }
+            GenerateTerrain();
         }
 
 
-        //Genera el terreno, asignando sus propiedades
-        public void Generate()
+        void GenerateTerrain()
         {
-            var biomes = new Biome[] { land, water };
+            //calculamos depth & width dependiendo en los vertices del mesh (nuestro Plane)
+            Vector3[] meshVertices = this.meshFilter.mesh.vertices;
+
+            int terrainDepth = (int)Mathf.Sqrt(meshVertices.Length);
+            int terrainWidth = terrainDepth;
+
+            //Inicializamos el heightMap usando el generador de NoiseMap
+            float[,] heightMap = this.noiseMap.GenerateNoiseMap(terrainDepth, terrainWidth, scale);
+
+            //Tras generar el heightMap, crearemos una textura 2D a la que asignaremos un material
+            Texture2D terrainTexture = BuildTexture(heightMap);
+            this.meshRenderer.material.mainTexture = terrainTexture;
         }
 
-        /*public Biome GetBiomeByHeight(float height, List<Biome> biomes)
+        /// <summary>
+        /// crea un Color array, que usaremos para crear una textura en 2D para el terreno
+        /// para cada coordenada del heightMap, tendrá un color distinto en la escala de grises
+        /// dependiendo de su valor, gracias a la funcion Color.Lerp (más negro, más profundo)
+        /// </summary>
+        /// <param name="heightMap"></param>
+        /// <returns>textura del terreno en escala de grises</returns>
+        Texture2D BuildTexture(float[,] heightMap)
         {
-            foreach (Biome biome in biomes)
+            int depth = heightMap.GetLength(0);
+            int width = heightMap.GetLength(1);
+
+            Color[] colorMap = new Color[depth*width];
+
+            for (int z = 0; z < depth; z++)
             {
-                if (biome.height == height)
+                for (int x = 0; x < width; x++)
                 {
-                    return biome;
+                    //Transformamos el 2D map en un Array
+                    int colorIndex = z * width + x;
+                    float height = heightMap[z,x];
+                    //Este primer mapa será una escala de grises
+                    colorMap[colorIndex] = Color.Lerp(Color.black, Color.white, height);
                 }
             }
-        }*/
 
-        public void CreateMeshComponents()
-        {
+            //Creamos una nueva textura y establecemos los colores a los pixeles
+            Texture2D terrainTexture = new Texture2D(width, depth);
+            terrainTexture.wrapMode = TextureWrapMode.Clamp;
+            terrainTexture.SetPixels(colorMap);
+            terrainTexture.Apply();
 
+            return terrainTexture;
         }
+    }
 
-        public void UpdateColors()
-        {
-
-        }
-
+    [System.Serializable]
+    public class TerrainType
+    {
+        public string type;
+        public float height;
+        public Color color;
     }
 
 }
