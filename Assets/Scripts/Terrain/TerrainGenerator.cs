@@ -21,6 +21,7 @@ namespace Terrain
         [SerializeField] MeshCollider collider;
         [SerializeField] float scale;
         [SerializeField] TerrainType[] terrainTypes;
+        [SerializeField] private float heightMultiplier;
 
         void Start()
         {
@@ -42,6 +43,50 @@ namespace Terrain
             //Tras generar el heightMap, crearemos una textura 2D a la que asignaremos un material
             Texture2D terrainTexture = BuildTexture(heightMap);
             this.meshRenderer.material.mainTexture = terrainTexture;
+
+            //Cambiamos el valor y del mesh
+            UpdateMeshVertices(heightMap);
+        }
+
+        /// <summary>
+        /// metodo responsable de cambiar los vertices del Mesh dependiendo de los valores del heightMap
+        /// </summary>
+        /// <param name="heightMap"></param>
+        private void UpdateMeshVertices(float[,] heightMap)
+        {
+            int depth = heightMap.GetLength(0);
+            int width = heightMap.GetLength(1);
+
+            Vector3[] meshVertices = this.meshFilter.mesh.vertices;
+
+            //iterar sobre todas las coordenadas del mapa, actualizando los indices de los vectores
+            int vertexIndex = 0;
+            for (int z = 0; z < depth; z++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    float height = heightMap[z,x];
+                    Vector3 vertex = meshVertices[vertexIndex];
+                    //Cambiamos la coordenada Y , dependiendo de la altura, evaluada por la funcion EvaluateHeight que he creado
+                    meshVertices[vertexIndex] = new Vector3(vertex.x, EvaluateHeight(height*heightMultiplier), vertex.z);
+                    vertexIndex++;
+                }
+            }
+
+            //Actualizamos los vertices del mesh y sus propiedades
+            this.meshFilter.mesh.vertices = meshVertices;
+            //IMPORTANTE: Hay que llamar a los metodos RecalculateBounds y RecalculateNormals cada vez que cambiemos los vertices de un mesh
+            this.meshFilter.mesh.RecalculateBounds();
+            this.meshFilter.mesh.RecalculateNormals();
+            //Actualizar el mesh collider
+            this.collider.sharedMesh = this.meshFilter.mesh;
+        }
+
+        private float EvaluateHeight(float height)
+        {
+            if (height < 0.4) return 0.4f;
+            else if (height < 0.5) return 0.5f;
+            else return height;
         }
 
         /// <summary>
