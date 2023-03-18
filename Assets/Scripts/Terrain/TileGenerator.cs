@@ -24,9 +24,13 @@ namespace Terrain
         [SerializeField] private float heightMultiplier;
         [SerializeField] AnimationCurve heigthCurve;
         [SerializeField] Wave[] waves;
-        //mapa de calor
+        // mapa de calor
         [SerializeField] TerrainType[] heatTerrainTypes;
         [SerializeField] private VisualizationMode visualizationMode;
+        // mapa de humedad
+        [SerializeField] TerrainType[] moistureTerrainTypes;
+        [SerializeField] AnimationCurve moistureCurve;
+        [SerializeField] Wave[] moistureWaves;
 
         public void GenerateTile(float centerVertexZ, float maxDistanceZ)
         {
@@ -65,10 +69,23 @@ namespace Terrain
                 }
             }
 
+            // generamos el moistureMap usando el Perlin Noise
+            float[,] moistureMap = this.noiseMap.GeneratePerlinNoiseMap(terrainDepth, terrainWidth, scale, offsetX, offsetZ, moistureWaves);
+            for (int z = 0; z < terrainDepth; z++)
+            {
+                for (int x = 0; x < terrainWidth; x++)
+                {
+                    // hacemos que las zonas más altas las más secas, reduciendo el valor del mapa
+                    moistureMap[z,x] -= this.moistureCurve.Evaluate(heightMap[z,x]) * heightMap[z,x];
+                }
+            }
+
             //Tras generar el heightMap, crearemos una textura 2D a la que asignaremos un material
             Texture2D heightTexture = BuildTexture(heightMap, this.terrainTypes);
-            // construimos un Texture2D para el heat map
+            // construimos la textura para el heat map
             Texture2D heatTexture = BuildTexture(heatMap, this.heatTerrainTypes);
+            // construimos la textura para el moisture map
+            Texture2D moistureTexture = BuildTexture(moistureMap, this.moistureTerrainTypes);
 
             //Mostraremos uno u otro en función del valor de visualizationMode
             switch (this.visualizationMode)
@@ -78,6 +95,9 @@ namespace Terrain
                     break;
                 case VisualizationMode.Heat:
                     this.meshRenderer.material.mainTexture = heatTexture;
+                    break;
+                case VisualizationMode.Moisture:
+                    this.meshRenderer.material.mainTexture = moistureTexture;
                     break;
                 default:
                     break;
@@ -199,7 +219,8 @@ namespace Terrain
     enum VisualizationMode
     {
         Height,
-        Heat
+        Heat,
+        Moisture
     }
 
 }

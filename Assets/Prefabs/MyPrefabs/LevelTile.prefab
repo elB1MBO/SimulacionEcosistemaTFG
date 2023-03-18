@@ -232,4 +232,60 @@ MonoBehaviour:
   - type: cold
     height: 1
     color: {r: 0.042452812, g: 0.16691214, b: 1, a: 0}
-  visualizationMode: 1
+  visualizationMode: 2
+  moistureTerrainTypes:
+  - type: dryest
+    height: 0.25
+    color: {r: 1, g: 0, b: 0, a: 0}
+  - type: dry
+    height: 0.4
+    color: {r: 1, g: 0.7666348, b: 0, a: 0}
+  - type: wet
+    height: 0.5
+    color: {r: 0, g: 0.9616327, b: 1, a: 0}
+  - type: wettest
+    height: 1
+    color: {r: 0, g: 0.3473599, b: 1, a: 0}
+  moistureCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.39969638
+      value: 0.00038999598
+      inSlope: 0.025828782
+      outSlope: 0.025828782
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.10255983
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  moistureWaves:
+  - seed: 3543
+    frequency: 1
+    amplitude: 1
+  - seed: 6754
+    frequency: 0.5
+    amplitude: 0.5
+  - seed: 8784
+    frequency: 0.25
+    amplitude: 0.25
