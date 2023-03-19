@@ -130,16 +130,19 @@ MonoBehaviour:
   collider: {fileID: 1239455386356845430}
   scale: 3
   terrainTypes:
-  - type: water
+  - name: water
     height: 0.4
     color: {r: 0.16140087, g: 0.7023103, b: 0.8773585, a: 0}
-  - type: beach
+    index: 0
+  - name: beach
     height: 0.45
     color: {r: 0.8962264, g: 0.8703758, b: 0.62144, a: 0}
-  - type: land
+    index: 1
+  - name: land
     height: 1
     color: {r: 0.34905455, g: 0.8207547, b: 0.25938943, a: 0}
-  heightMultiplier: 3
+    index: 2
+  heightMultiplier: 1
   heigthCurve:
     serializedVersion: 2
     m_Curve:
@@ -220,32 +223,40 @@ MonoBehaviour:
     frequency: 0.25
     amplitude: 4
   heatTerrainTypes:
-  - type: hot
+  - name: hot
     height: 0.2
     color: {r: 1, g: 0.13846911, b: 0.043137252, a: 0}
-  - type: warm
+    index: 0
+  - name: warm
     height: 0.35
     color: {r: 1, g: 0.8688066, b: 0.043137252, a: 0}
-  - type: fresh
+    index: 1
+  - name: cold
     height: 0.5
     color: {r: 0.022694906, g: 0.8724332, b: 0.9622642, a: 0}
-  - type: cold
+    index: 2
+  - name: frozen
     height: 1
     color: {r: 0.042452812, g: 0.16691214, b: 1, a: 0}
-  visualizationMode: 2
+    index: 3
+  visualizationMode: 0
   moistureTerrainTypes:
-  - type: dryest
+  - name: dryest
     height: 0.25
     color: {r: 1, g: 0, b: 0, a: 0}
-  - type: dry
+    index: 0
+  - name: dry
     height: 0.4
     color: {r: 1, g: 0.7666348, b: 0, a: 0}
-  - type: wet
+    index: 1
+  - name: wet
     height: 0.5
     color: {r: 0, g: 0.9616327, b: 1, a: 0}
-  - type: wettest
+    index: 2
+  - name: wettest
     height: 1
     color: {r: 0, g: 0.3473599, b: 1, a: 0}
+    index: 3
   moistureCurve:
     serializedVersion: 2
     m_Curve:
@@ -289,3 +300,41 @@ MonoBehaviour:
   - seed: 8784
     frequency: 0.25
     amplitude: 0.25
+  biomes:
+  - biomes:
+    - name: desert
+      color: {r: 0.91999036, g: 0.93333334, b: 0.109803915, a: 0}
+    - name: grassland
+      color: {r: 0.0610013, g: 1, b: 0, a: 0}
+    - name: tundra
+      color: {r: 0.7688679, g: 1, b: 0.9122583, a: 0}
+    - name: tundra
+      color: {r: 0.7688679, g: 1, b: 0.9122583, a: 0}
+  - biomes:
+    - name: savanna
+      color: {r: 1, g: 0.65827984, b: 0, a: 0}
+    - name: savanna
+      color: {r: 1, g: 0.65882355, b: 0, a: 0}
+    - name: boreal forest
+      color: {r: 0.016939966, g: 0.46226418, b: 0.006541462, a: 0}
+    - name: tundra
+      color: {r: 0.7688679, g: 1, b: 0.9122583, a: 0}
+  - biomes:
+    - name: tropical rainforest
+      color: {r: 0.4596792, g: 0.8396226, b: 0.1782218, a: 0}
+    - name: boreal forest
+      color: {r: 0.015686275, g: 0.4627451, b: 0.007843138, a: 0}
+    - name: boreal forest
+      color: {r: 0.016939966, g: 0.46226418, b: 0.006541462, a: 0}
+    - name: tundra
+      color: {r: 0.7688679, g: 1, b: 0.9122583, a: 0}
+  - biomes:
+    - name: tropical rainforest
+      color: {r: 0.4596792, g: 0.8396226, b: 0.1782218, a: 0}
+    - name: tropical rainforest
+      color: {r: 0.45882353, g: 0.8392157, b: 0.1764706, a: 0}
+    - name: tundra
+      color: {r: 0.76862746, g: 1, b: 0.9137255, a: 0}
+    - name: tundra
+      color: {r: 0.7688679, g: 1, b: 0.9122583, a: 0}
+  waterColor: {r: 0, g: 0.81073284, b: 1, a: 0}

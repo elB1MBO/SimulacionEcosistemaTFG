@@ -31,6 +31,9 @@ namespace Terrain
         [SerializeField] TerrainType[] moistureTerrainTypes;
         [SerializeField] AnimationCurve moistureCurve;
         [SerializeField] Wave[] moistureWaves;
+        //Bioma
+        [SerializeField] BiomeRow[] biomes;
+        [SerializeField] Color waterColor;
 
         public void GenerateTile(float centerVertexZ, float maxDistanceZ)
         {
@@ -80,12 +83,18 @@ namespace Terrain
                 }
             }
 
-            //Tras generar el heightMap, crearemos una textura 2D a la que asignaremos un material
-            Texture2D heightTexture = BuildTexture(heightMap, this.terrainTypes);
+            // construimos la textura con el mapa de altura
+            TerrainType[,] chosenHeightTerrainTypes = new TerrainType[terrainDepth, terrainWidth];
+            Texture2D heightTexture = BuildTexture(heightMap, this.terrainTypes, chosenHeightTerrainTypes);
             // construimos la textura para el heat map
-            Texture2D heatTexture = BuildTexture(heatMap, this.heatTerrainTypes);
+            TerrainType[,] chosenHeatTerrainTypes = new TerrainType[terrainDepth, terrainWidth];
+            Texture2D heatTexture = BuildTexture(heatMap, this.heatTerrainTypes, chosenHeatTerrainTypes);
             // construimos la textura para el moisture map
-            Texture2D moistureTexture = BuildTexture(moistureMap, this.moistureTerrainTypes);
+            TerrainType[,] chosenMoistureTerrainTypes = new TerrainType[terrainDepth, terrainWidth];
+            Texture2D moistureTexture = BuildTexture(moistureMap, this.moistureTerrainTypes, chosenMoistureTerrainTypes);
+
+            // creamos una textura del bioma a partir de los tres valores anteriores
+            Texture2D biomeTexture = BuildBiomeTexture(chosenHeightTerrainTypes, chosenHeatTerrainTypes, chosenMoistureTerrainTypes);
 
             //Mostraremos uno u otro en función del valor de visualizationMode
             switch (this.visualizationMode)
@@ -98,6 +107,9 @@ namespace Terrain
                     break;
                 case VisualizationMode.Moisture:
                     this.meshRenderer.material.mainTexture = moistureTexture;
+                    break;
+                case VisualizationMode.Biome:
+                    this.meshRenderer.material.mainTexture = biomeTexture;
                     break;
                 default:
                     break;
@@ -155,7 +167,7 @@ namespace Terrain
         /// </summary>
         /// <param name="heightMap"></param>
         /// <returns>textura del terreno en escala de grises</returns>
-        private Texture2D BuildTexture(float[,] heightMap, TerrainType[] terrainTypes)
+        private Texture2D BuildTexture(float[,] heightMap, TerrainType[] terrainTypes, TerrainType[,] chosenTerrainType) 
         {
             int depth = heightMap.GetLength(0);
             int width = heightMap.GetLength(1);
@@ -176,6 +188,9 @@ namespace Terrain
                     //TerrainType terrainType = GetTerrainType(height);
                     TerrainType terrainType = ChooseTerrainType(height, terrainTypes);
                     colorMap[colorIndex] = terrainType.color;
+
+                        //guardamos el tipo de terreno escogido
+                        chosenTerrainType[z,x] = terrainType;
                 }
             }
 
@@ -206,21 +221,85 @@ namespace Terrain
             //Devuelve el último tipo que debería ser el más alto
             return terrainTypes[terrainTypes.Length - 1];
         }
+
+        //Para asignar un bioma a una region de acuerdo al tipo de terreno
+        private Texture2D BuildBiomeTexture(TerrainType[,] heightTerrainTypes, TerrainType[,] heatTerrainTypes, TerrainType[,] moistureTerrainTypes)
+        {
+            int depth = heatTerrainTypes.GetLength(0);
+            int width = heatTerrainTypes.GetLength(1);
+
+            Color[] colorMap = new Color[depth*width];
+            for (int z = 0; z < depth; z++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int colorIndex = z * width + x;
+
+                    TerrainType heightTerrainType = heightTerrainTypes[z,x];
+                    // comprueba si la coordenada es de una region de agua
+                    if(heightTerrainType.name != "water")
+                    {
+                        // si la coordenada no es agua, definimos el bioma por el calor y la humedad
+                        TerrainType heatTerrainType = heatTerrainTypes[z,x];
+                        TerrainType moistureTerrainType = moistureTerrainTypes[z,x];
+
+                        // usamos el indice de la clase TerrainType para acceder a la tabla de biomas
+                        Biome biome = this.biomes[moistureTerrainType.index].biomes[heatTerrainType.index];
+                        // asignamos el color de acuerdo al bioma 
+                        colorMap[colorIndex] = biome.color;
+                    } else
+                    {
+                        // las regiones de agua no tienen un bioma, son siempre del mismo color
+                        colorMap[colorIndex] = this.waterColor;
+                    }
+                }
+            }
+            // crea una nueva textura y establece sus colores
+            Texture2D terrainTexture = new Texture2D(width, depth);
+            terrainTexture.filterMode = FilterMode.Point;
+            terrainTexture.wrapMode = TextureWrapMode.Clamp;
+            terrainTexture.SetPixels(colorMap);
+            terrainTexture.Apply();
+
+            return terrainTexture;
+        }
+
     }
 
     [System.Serializable]
     public class TerrainType
     {
-        public string type;
+        public string name;
         public float height;
         public Color color;
+        public int index;
+    }
+
+    /**
+     * Vamos a necesitar 2 clases, ya que en Unity no podemos tener un array 2D serializable:
+     *  BiomeRow: representa una fila de biomas de la "tabla" de biomas que tenemos
+     *  Biome: representa una celda de la tabla de biomas
+     */
+
+    [System.Serializable]
+    public class Biome
+    {
+        public string name;
+        public Color color;
+    }
+
+    [System.Serializable]
+    public class BiomeRow
+    {
+        public Biome[] biomes;
     }
 
     enum VisualizationMode
     {
         Height,
         Heat,
-        Moisture
+        Moisture,
+        Biome
     }
 
 }
