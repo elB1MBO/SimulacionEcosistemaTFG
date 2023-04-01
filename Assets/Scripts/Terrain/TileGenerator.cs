@@ -3,6 +3,28 @@ using UnityEngine;
 
 namespace Terrain
 {
+    /// <summary>
+    /// clase para almacenar toda la información de un tile
+    /// </summary>
+    public class TileData
+    {
+        public float[,] heightMap, heatMap, moistureMap;
+        public TerrainType[,] chosenHeightTerrainTypes, chosenHeatTerrainTypes, chosenMoistureTerrainTypes;
+        public Biome[,] chosenBiomes;
+        public Mesh mesh;
+
+        public TileData(float[,] heightMap, float[,] heatMap, float[,] moistureMap, TerrainType[,] chosenHeightTerrainTypes, TerrainType[,] chosenHeatTerrainTypes, TerrainType[,] chosenMoistureTerrainTypes, Biome[,] chosenBiomes, Mesh mesh)
+        {
+            this.heightMap = heightMap;
+            this.heatMap = heatMap;
+            this.moistureMap = moistureMap;
+            this.chosenHeightTerrainTypes = chosenHeightTerrainTypes;
+            this.chosenHeatTerrainTypes = chosenHeatTerrainTypes;
+            this.chosenMoistureTerrainTypes = chosenMoistureTerrainTypes;
+            this.chosenBiomes = chosenBiomes;
+            this.mesh = mesh;
+        }
+    }
 
     public class TileGenerator : MonoBehaviour
     {
@@ -35,7 +57,7 @@ namespace Terrain
         [SerializeField] BiomeRow[] biomes;
         [SerializeField] Color waterColor;
 
-        public void GenerateTile(float centerVertexZ, float maxDistanceZ)
+        public TileData GenerateTile(float centerVertexZ, float maxDistanceZ)
         {
             //calculamos depth & width dependiendo en los vertices del mesh (nuestro Plane)
             Vector3[] meshVertices = this.meshFilter.mesh.vertices;
@@ -94,7 +116,8 @@ namespace Terrain
             Texture2D moistureTexture = BuildTexture(moistureMap, this.moistureTerrainTypes, chosenMoistureTerrainTypes);
 
             // creamos una textura del bioma a partir de los tres valores anteriores
-            Texture2D biomeTexture = BuildBiomeTexture(chosenHeightTerrainTypes, chosenHeatTerrainTypes, chosenMoistureTerrainTypes);
+            Biome[,] chosenBiomes = new Biome[terrainDepth, terrainWidth];
+            Texture2D biomeTexture = BuildBiomeTexture(chosenHeightTerrainTypes, chosenHeatTerrainTypes, chosenMoistureTerrainTypes, chosenBiomes);
 
             //Mostraremos uno u otro en función del valor de visualizationMode
             switch (this.visualizationMode)
@@ -117,6 +140,10 @@ namespace Terrain
 
             //Actualizamos el mesh de acuerdo al mapa de altura
             UpdateMeshVertices(heightMap);
+
+            //Devuelve un objeto de la clase TileData con toda la información
+            TileData tileData = new TileData(heightMap, heatMap, moistureMap, chosenHeightTerrainTypes, chosenHeatTerrainTypes, chosenMoistureTerrainTypes, chosenBiomes, this.meshFilter.mesh);
+            return tileData;
         }
 
         /// <summary>
@@ -223,7 +250,7 @@ namespace Terrain
         }
 
         //Para asignar un bioma a una region de acuerdo al tipo de terreno
-        private Texture2D BuildBiomeTexture(TerrainType[,] heightTerrainTypes, TerrainType[,] heatTerrainTypes, TerrainType[,] moistureTerrainTypes)
+        private Texture2D BuildBiomeTexture(TerrainType[,] heightTerrainTypes, TerrainType[,] heatTerrainTypes, TerrainType[,] moistureTerrainTypes, Biome[,] chosenBiomes)
         {
             int depth = heatTerrainTypes.GetLength(0);
             int width = heatTerrainTypes.GetLength(1);
@@ -247,6 +274,9 @@ namespace Terrain
                         Biome biome = this.biomes[moistureTerrainType.index].biomes[heatTerrainType.index];
                         // asignamos el color de acuerdo al bioma 
                         colorMap[colorIndex] = biome.color;
+
+                        //guardamos en chosenBiomes solo cuando no es agua
+                        chosenBiomes[z,x] = biome;
                     } else
                     {
                         // las regiones de agua no tienen un bioma, son siempre del mismo color
