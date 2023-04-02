@@ -35,8 +35,8 @@ namespace Terrain
 
                     // obtenemos el tipo de terreno por la coordenada
                     TerrainType terrainType = tileData.chosenHeightTerrainTypes[tileCoord.coordZ, tileCoord.tileX];
-                    // si el tipo de terreno es agua, no podrá haber un árbol
-                    if (terrainType.name != "water")
+                    // si el tipo de terreno es agua o arena, no podrá haber un árbol
+                    if (terrainType.name != "water" || terrainType.name != "beach")
                     {
                         float treeProb = noiseMap[z, x];
 
