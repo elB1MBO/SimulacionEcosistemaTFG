@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class BasicBehaviour : MonoBehaviour
 {
@@ -9,29 +11,36 @@ public class BasicBehaviour : MonoBehaviour
     public string targetTag = "Food";
 
     public GameObject[] allTargets;
-    public GameObject actualTarget;
+    public GameObject actualTarget; // nearest target
    
     //Settings
-    [SerializeField]
-    float movSpeed = 1.0f;
-    float rotateSpeed = 1.0f;
+    //[SerializeField]
+    //float movSpeed = 1.0f;
+    //float rotateSpeed = 1.0f;
     float minDist = Mathf.Infinity;
+
+    public NavMeshAgent navigation;
+
+    private void Start()
+    {
+        StartCoroutine(Awaiter());
+    }
 
     // Update is called once per frame
     void Update()
     {
-        allTargets = GameObject.FindGameObjectsWithTag(targetTag);
-        GetClosestTarget();
-        if(actualTarget != null)
-        {
-            print(actualTarget.name);
-            LookAt(actualTarget);
-            MoveAt(actualTarget);
-        } else
-        {
-            GameObject actualTarget;
-            GetClosestTarget();
-        }
+        //allTargets = GameObject.FindGameObjectsWithTag(targetTag);
+        //GetClosestTarget();
+        //if(actualTarget != null)
+        //{
+        //    print(actualTarget.name);
+        //    LookAt(actualTarget);
+        //    MoveAt(actualTarget);
+        //} else
+        //{
+        //    GameObject actualTarget;
+        //    GetClosestTarget();
+        //}
     }
 
     void GetClosestTarget()
@@ -48,31 +57,40 @@ public class BasicBehaviour : MonoBehaviour
         }
     }
 
-    void MoveAt(GameObject target)
+    IEnumerator Awaiter()
     {
-        if(target.transform.position != transform.position)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, movSpeed * Time.deltaTime);
-        } else
-        {
-            Eat();
-        }
+        yield return new WaitForSeconds(5);
+        allTargets = GameObject.FindGameObjectsWithTag(targetTag);
+        GetClosestTarget();
+
+        navigation.destination = actualTarget.transform.position;
     }
 
-    void LookAt(GameObject target) 
-    {
-        if(target.transform.position != transform.position)
-        {
-            // Rotate the forward vector towards the target direction by one step
-            Vector3 newDirection = Vector3.RotateTowards(transform.position, target.transform.position, rotateSpeed * Time.deltaTime, 0.0f);
+    //void MoveAt(GameObject target)
+    //{
+    //    if(target.transform.position != transform.position)
+    //    {
+    //        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, movSpeed * Time.deltaTime);
+    //    } else
+    //    {
+    //        Eat();
+    //    }
+    //}
+
+    //void LookAt(GameObject target) 
+    //{
+    //    if(target.transform.position != transform.position)
+    //    {
+    //        // Rotate the forward vector towards the target direction by one step
+    //        Vector3 newDirection = Vector3.RotateTowards(transform.position, target.transform.position, rotateSpeed * Time.deltaTime, 0.0f);
             
-            // Draw a ray pointing at our target in
-            Debug.DrawRay(transform.position, newDirection, Color.red);
+    //        // Draw a ray pointing at our target in
+    //        Debug.DrawRay(transform.position, newDirection, Color.red);
 
-            // Calculate a rotation a step closer to the target and applies rotation to this object
-            transform.rotation = Quaternion.LookRotation(newDirection);
-        }
-    }
+    //        // Calculate a rotation a step closer to the target and applies rotation to this object
+    //        transform.rotation = Quaternion.LookRotation(newDirection);
+    //    }
+    //}
 
     void Eat()
     {

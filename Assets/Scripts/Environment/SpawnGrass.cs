@@ -10,7 +10,9 @@ public class SpawnGrass : MonoBehaviour
     public float spawnDelay;
     public bool stopSpawning = false;
 
-    public Vector3 groundSize;
+    public Vector3 size;
+
+    public string objectTag = "Food";
 
     [SerializeField]
     private float foodAmount;
@@ -18,6 +20,7 @@ public class SpawnGrass : MonoBehaviour
     void Start()
     {
         foodAmount = 0;
+        //size = ground.transform.localScale;
         InvokeRepeating("SpawnObject", spawnTime, spawnDelay);
     }
     // Update is called once per frame
@@ -27,17 +30,24 @@ public class SpawnGrass : MonoBehaviour
         { 
             stopSpawning = !stopSpawning;
         }
+
+        //Comprueba que la cantidad de comida no baja de cierto punto. Si lo hace, vuelve a empezar a spawnear
+        UpdateFoodAmount();
+        if (foodAmount <5) { 
+            stopSpawning = false;
+            InvokeRepeating("SpawnObject", spawnTime, spawnDelay);
+        }
     }
 
     public void SpawnObject()
     {
+        UpdateFoodAmount(); //Hay que llamar a este método aquí dentro tambien, ya que si no se repetirá 10 veces siempre, en lugar de x veces hasta 10.
         if (foodAmount < 10)
         {
-            //Queremos que la posiciçon sea aleatoria en el terreno posible:
-            Vector3 spawnPos = new Vector3(Random.Range(-groundSize.x / 2, groundSize.x / 2), 0, Random.Range(-groundSize.z / 2, groundSize.z / 2));
+            //Queremos que la posicion sea aleatoria en el terreno posible:
+            Vector3 spawnPos = new Vector3(Random.Range(-size.x / 2, size.x / 2), 0, Random.Range(-size.z / 2, size.z / 2));
             GameObject newGrass = Instantiate(grass, spawnPos, transform.rotation);
-            newGrass.gameObject.tag = "Food";
-            foodAmount++;
+            newGrass.gameObject.tag = objectTag;
 
             if (stopSpawning)
             {
@@ -48,6 +58,12 @@ public class SpawnGrass : MonoBehaviour
         {
             stopSpawning = true;
         }
+    }
+
+    //Funcion que va comprobando la cantidad de comida que hay por su tag
+    private void UpdateFoodAmount()
+    {
+        foodAmount = GameObject.FindGameObjectsWithTag(objectTag).Length;
     }
 
 }
