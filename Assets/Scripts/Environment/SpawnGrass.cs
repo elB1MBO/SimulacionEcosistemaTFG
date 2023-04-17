@@ -45,7 +45,7 @@ public class SpawnGrass : MonoBehaviour
         if (foodAmount < 10)
         {
             //Queremos que la posicion sea aleatoria en el terreno posible:
-            Vector3 spawnPos = new Vector3(Random.Range(-size.x / 2, size.x / 2), 0, Random.Range(-size.z / 2, size.z / 2));
+            Vector3 spawnPos = new Vector3(Random.Range(-size.x / 2, size.x / 2), 0.05f, Random.Range(-size.z / 2, size.z / 2));
             GameObject newGrass = Instantiate(grass, spawnPos, transform.rotation);
             newGrass.gameObject.tag = objectTag;
 

@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -10,8 +12,10 @@ public class BasicBehaviour : MonoBehaviour
 
     public string targetTag = "Food";
 
-    public GameObject[] allTargets;
-    public GameObject actualTarget; // nearest target
+    public List<GameObject> allTargets;
+    public GameObject nearestTarget; // nearest target
+
+    [SerializeField] private float eatTime = 1;
    
     //Settings
     //[SerializeField]
@@ -29,18 +33,11 @@ public class BasicBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //allTargets = GameObject.FindGameObjectsWithTag(targetTag);
-        //GetClosestTarget();
-        //if(actualTarget != null)
-        //{
-        //    print(actualTarget.name);
-        //    LookAt(actualTarget);
-        //    MoveAt(actualTarget);
-        //} else
-        //{
-        //    GameObject actualTarget;
-        //    GetClosestTarget();
-        //}
+        if(allTargets.Count > 0)
+        {
+            GetClosestTarget();
+            navigation.destination = nearestTarget.transform.position;
+        }
     }
 
     void GetClosestTarget()
@@ -52,19 +49,36 @@ public class BasicBehaviour : MonoBehaviour
             if(distance < minDist && target != null)
             {
                 minDist = distance;
-                actualTarget = target;
+                nearestTarget = target;
             }
         }
     }
 
     IEnumerator Awaiter()
     {
-        yield return new WaitForSeconds(5);
-        allTargets = GameObject.FindGameObjectsWithTag(targetTag);
-        GetClosestTarget();
-
-        navigation.destination = actualTarget.transform.position;
+        yield return new WaitForSeconds(eatTime);
+        allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
     }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Animal: " + this.gameObject.name + " triggered with " + other.gameObject.name);
+        //Aquí, dependiendo del tipo de objeto con el que se encuentre, hará una cosa u otra
+        if (other.gameObject.tag == "Food")
+        {
+            Eat(other.gameObject);
+        }
+        //Reinicia el comportamiento del animal cuando alcanza un objetivo
+        this.Start();
+    }
+    void Eat(GameObject gameObject)
+    {
+        Debug.Log("Animal: " + this.gameObject.name + " has eaten " + gameObject.name);
+        allTargets.Remove(gameObject);
+        Destroy(gameObject);
+        GetClosestTarget();
+    }
+
 
     //void MoveAt(GameObject target)
     //{
@@ -83,7 +97,7 @@ public class BasicBehaviour : MonoBehaviour
     //    {
     //        // Rotate the forward vector towards the target direction by one step
     //        Vector3 newDirection = Vector3.RotateTowards(transform.position, target.transform.position, rotateSpeed * Time.deltaTime, 0.0f);
-            
+
     //        // Draw a ray pointing at our target in
     //        Debug.DrawRay(transform.position, newDirection, Color.red);
 
@@ -91,12 +105,4 @@ public class BasicBehaviour : MonoBehaviour
     //        transform.rotation = Quaternion.LookRotation(newDirection);
     //    }
     //}
-
-    void Eat()
-    {
-        if(actualTarget != null)
-        {
-            Destroy(actualTarget);
-        }
-    }
 }
