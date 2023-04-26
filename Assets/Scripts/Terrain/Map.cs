@@ -4,14 +4,10 @@ using System.Collections.Generic;
 public class Map : MonoBehaviour
 {
     public Material terrainMaterial, edgeMaterial;
-    public GameObject[] treePrefabs, plantsPrefabs;
+    //public GameObject[] treePrefabs, plantsPrefabs;
 
-    public int size = 150;
+    public int size = 200;
     public float waterLevel = .35f, scale = .1f;
-    public float treeNoiseScale = .005f;
-    public float treeDensity = .01f;
-    public float plantsNoiseScale = .05f;
-    public float plantsDensity = .35f;
 
     Cell[,] map;
     // Start is called before the first frame update
@@ -50,8 +46,8 @@ public class Map : MonoBehaviour
         DrawTerrainMesh(map);
         DrawEdgeMesh(map);
         DrawTexture(map);
-        GenerateTrees(map);
-        GeneratePlants(map);
+        //GenerateTrees(map);
+        //GeneratePlants(map);
     }
 
     void DrawTerrainMesh(Cell[,] map) {
@@ -195,63 +191,63 @@ public class Map : MonoBehaviour
         meshRenderer.material.mainTexture = texture;
     }
 
-    void GenerateTrees(Cell[,] map)
-    {
-        float[,] noiseMap = new float[size,size];
-        (float xOffset, float zOffset) = (Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
-        for(int z = 0; z < size; z++) {
-            for(int x = 0; x < size; x++) {
-                float noiseValue = Mathf.PerlinNoise(x * treeNoiseScale + xOffset, z * treeNoiseScale + zOffset);
-                noiseMap[x, z] = noiseValue;
-            }
-        }
+    //void GenerateTrees(Cell[,] map)
+    //{
+    //    float[,] noiseMap = new float[size,size];
+    //    (float xOffset, float zOffset) = (Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
+    //    for(int z = 0; z < size; z++) {
+    //        for(int x = 0; x < size; x++) {
+    //            float noiseValue = Mathf.PerlinNoise(x * treeNoiseScale + xOffset, z * treeNoiseScale + zOffset);
+    //            noiseMap[x, z] = noiseValue;
+    //        }
+    //    }
 
-        for(int y = 0; y < size; y++) {
-            for(int x = 0; x < size; x++) {
-                Cell cell = map[x, y];
-                if(!cell.isWater) {
-                    float v = Random.Range(0f, treeDensity);
-                    if(noiseMap[x, y] < v) {
-                        //Es un arbol
-                        GameObject prefab = treePrefabs[Random.Range(0, treePrefabs.Length)];
-                        GameObject tree = Instantiate(prefab, transform);
-                        tree.transform.position = new Vector3(x, 0, y);
-                        tree.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
-                        tree.transform.localScale = Vector3.one * Random.Range(.8f, 1.2f);
-                    }
-                }
-            }
-        }
-    }
+    //    for(int y = 0; y < size; y++) {
+    //        for(int x = 0; x < size; x++) {
+    //            Cell cell = map[x, y];
+    //            if(!cell.isWater) {
+    //                float v = Random.Range(0f, treeDensity);
+    //                if(noiseMap[x, y] < v) {
+    //                    //Es un arbol
+    //                    GameObject prefab = treePrefabs[Random.Range(0, treePrefabs.Length)];
+    //                    GameObject tree = Instantiate(prefab, transform);
+    //                    tree.transform.position = new Vector3(x, 0, y);
+    //                    tree.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
+    //                    tree.transform.localScale = Vector3.one * Random.Range(.8f, 1.2f);
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
-    void GeneratePlants(Cell[,] map)
-    {
-        float[,] noiseMap = new float[size,size];
-        (float xOffset, float zOffset) = (Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
-        for(int z = 0; z < size; z++) {
-            for(int x = 0; x < size; x++) {
-                float noiseValue = Mathf.PerlinNoise(x * plantsNoiseScale + xOffset, z * plantsNoiseScale + zOffset);
-                noiseMap[x, z] = noiseValue;
-            }
-        }
+    //void GeneratePlants(Cell[,] map)
+    //{
+    //    float[,] noiseMap = new float[size,size];
+    //    (float xOffset, float zOffset) = (Random.Range(-10000f, 10000f), Random.Range(-10000f, 10000f));
+    //    for(int z = 0; z < size; z++) {
+    //        for(int x = 0; x < size; x++) {
+    //            float noiseValue = Mathf.PerlinNoise(x * plantsNoiseScale + xOffset, z * plantsNoiseScale + zOffset);
+    //            noiseMap[x, z] = noiseValue;
+    //        }
+    //    }
 
-        for(int y = 0; y < size; y++) {
-            for(int x = 0; x < size; x++) {
-                Cell cell = map[x, y];
-                if(!cell.isWater) {
-                    float v = Random.Range(0f, plantsDensity);
-                    if(noiseMap[x, y] < v) {
-                        //Es un arbol
-                        GameObject prefab = plantsPrefabs[Random.Range(0, plantsPrefabs.Length)];
-                        GameObject plant = Instantiate(prefab, transform);
-                        plant.transform.position = new Vector3(x, 0, y);
-                        plant.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
-                        plant.transform.localScale = Vector3.one * Random.Range(.8f, 1.2f);
-                    }
-                }
-            }
-        }
-    }
+    //    for(int y = 0; y < size; y++) {
+    //        for(int x = 0; x < size; x++) {
+    //            Cell cell = map[x, y];
+    //            if(!cell.isWater) {
+    //                float v = Random.Range(0f, plantsDensity);
+    //                if(noiseMap[x, y] < v) {
+    //                    //Es un arbol
+    //                    GameObject prefab = plantsPrefabs[Random.Range(0, plantsPrefabs.Length)];
+    //                    GameObject plant = Instantiate(prefab, transform);
+    //                    plant.transform.position = new Vector3(x, 0, y);
+    //                    plant.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
+    //                    plant.transform.localScale = Vector3.one * Random.Range(.8f, 1.2f);
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
     /* void OnDrawGizmos() {
         if(!Application.isPlaying) return;
@@ -269,10 +265,3 @@ public class Map : MonoBehaviour
     } */
 
 }
-
-
-/* for(int z=0; z<size; z++){
-    for(int x=0; x<size; x++){
-                
-    }
-} */
