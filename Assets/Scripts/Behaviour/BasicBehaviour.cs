@@ -10,7 +10,7 @@ public class BasicBehaviour : MonoBehaviour
 {
     //public int sense = 5;
 
-    public string targetTag = "Food";
+    public string targetTag;
 
     public List<GameObject> allTargets;
     public GameObject nearestTarget; // nearest target
@@ -21,7 +21,7 @@ public class BasicBehaviour : MonoBehaviour
     //[SerializeField]
     //float movSpeed = 1.0f;
     //float rotateSpeed = 1.0f;
-    float minDist = Mathf.Infinity;
+    float minDist;
 
     public NavMeshAgent navigation;
 
@@ -42,11 +42,11 @@ public class BasicBehaviour : MonoBehaviour
 
     void GetClosestTarget()
     {
-       
+        //importante la condicion de que el tag sea distinto, ya que si no siempre estará fija en el mismo target
         foreach (GameObject target in allTargets)
         {
             float distance = Vector3.Distance(transform.position, target.transform.position);
-            if(distance < minDist && target != null)
+            if (distance < minDist && target != null) 
             {
                 minDist = distance;
                 nearestTarget = target;
@@ -58,12 +58,19 @@ public class BasicBehaviour : MonoBehaviour
     {
         yield return new WaitForSeconds(eatTime);
         allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
+        nearestTarget = null;
+        minDist = Mathf.Infinity;
     }
 
     public void OnTriggerEnter(Collider other)
     {
         Debug.Log("Animal: " + this.gameObject.name + " triggered with " + other.gameObject.name);
         //Aquí, dependiendo del tipo de objeto con el que se encuentre, hará una cosa u otra
+        if(other.gameObject.tag == "Water")
+        {
+            this.targetTag = "Food";
+            StartCoroutine(Awaiter());
+        }
         if (other.gameObject.tag == "Food")
         {
             Eat(other.gameObject);
