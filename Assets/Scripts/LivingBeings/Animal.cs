@@ -1,8 +1,8 @@
 ﻿using System;
+using Unity.VisualScripting;
+using UnityEngine;
 
-public class Animal
+public class Animal : MonoBehaviour
 {
-	public Animal()
-	{
-	}
+	
 }
