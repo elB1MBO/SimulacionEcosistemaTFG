@@ -31,7 +31,7 @@ public class BasicAnimal : MonoBehaviour
         reproduceUrgeBar.UpdateValueBar(maxValue, currentReproduceUrge);
 
         currentHungry += 0.02f;
-        currentThirsty += 0.01f;
+        currentThirsty += 0.015f;
 
         if (currentHungry >= maxValue || currentThirsty >= maxValue)
         {
@@ -42,5 +42,10 @@ public class BasicAnimal : MonoBehaviour
             hungryBar.UpdateValueBar(maxValue, currentHungry);
             thirstyBar.UpdateValueBar(maxValue, currentThirsty);
         }
+
     }
+
+    public float getHungry() { return currentHungry; }
+    public float getThirsty() { return currentThirsty; }
+    public float getReproduceUrge() { return currentReproduceUrge; }
 }
