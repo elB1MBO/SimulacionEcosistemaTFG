@@ -25,6 +25,8 @@ public class BasicBehaviour : MonoBehaviour
 
     public NavMeshAgent navigation;
 
+    public Actions currentAction = Actions.IDLE;
+
     private void Start()
     {
         StartCoroutine(Awaiter());
@@ -52,6 +54,15 @@ public class BasicBehaviour : MonoBehaviour
                 nearestTarget = target;
             }
         }
+
+        switch (nearestTarget.tag)
+        {
+            case "Food":
+                currentAction = Actions.SEARCHING_FOOD; break;
+            case "Water":
+                currentAction = Actions.SEARCHING_WATER; break;
+            default: currentAction = Actions.IDLE; break;
+        }
     }
 
     IEnumerator Awaiter()
@@ -69,47 +80,35 @@ public class BasicBehaviour : MonoBehaviour
         if(other.gameObject.tag == "Water")
         {
             this.targetTag = "Food";
+            currentAction = Actions.DRINKING;
             StartCoroutine(Awaiter());
         }
-        if (other.gameObject.tag == "Food")
+        if(other.gameObject.tag == "Food")
         {
-            Eat(other.gameObject);
+            this.targetTag = "Water";
+            currentAction = Actions.EATING;
+            StartCoroutine(Awaiter());
+            
+            //Eat(other.gameObject);
         }
         //Reinicia el comportamiento del animal cuando alcanza un objetivo
-        this.Start();
+        //this.Start();
     }
     void Eat(GameObject gameObject)
     {
-        Debug.Log("Animal: " + this.gameObject.name + " has eaten " + gameObject.name);
+        Debug.Log("Animal: " + this.gameObject.name + " is eating " + gameObject.name);
         allTargets.Remove(gameObject);
         Destroy(gameObject);
         GetClosestTarget();
     }
 
+}
 
-    //void MoveAt(GameObject target)
-    //{
-    //    if(target.transform.position != transform.position)
-    //    {
-    //        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, movSpeed * Time.deltaTime);
-    //    } else
-    //    {
-    //        Eat();
-    //    }
-    //}
-
-    //void LookAt(GameObject target) 
-    //{
-    //    if(target.transform.position != transform.position)
-    //    {
-    //        // Rotate the forward vector towards the target direction by one step
-    //        Vector3 newDirection = Vector3.RotateTowards(transform.position, target.transform.position, rotateSpeed * Time.deltaTime, 0.0f);
-
-    //        // Draw a ray pointing at our target in
-    //        Debug.DrawRay(transform.position, newDirection, Color.red);
-
-    //        // Calculate a rotation a step closer to the target and applies rotation to this object
-    //        transform.rotation = Quaternion.LookRotation(newDirection);
-    //    }
-    //}
+public enum Actions
+{
+    IDLE,
+    SEARCHING_FOOD,
+    EATING,
+    SEARCHING_WATER,
+    DRINKING,
 }
