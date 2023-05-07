@@ -10,15 +10,8 @@ public class ActionText : MonoBehaviour
 
     [SerializeField] private Animal animal;
 
-    private Actions currentAction;
-
-    private void Start()
-    {
-        currentAction = animal.getCurrentAction();
-    }
-
     private void Update()
     {
-        text.text = currentAction.ToString();
+        text.text = animal.getCurrentAction().ToString();
     }
 }

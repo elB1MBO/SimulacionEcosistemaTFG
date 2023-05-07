@@ -945,7 +945,7 @@ GameObject:
   - component: {fileID: 1941917921419018262}
   m_Layer: 0
   m_Name: Hen
-  m_TagString: Untagged
+  m_TagString: Hen
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -15,7 +15,8 @@ namespace AnimalNamespace
         public List<GameObject> allTargets;
         public GameObject nearestTarget;
 
-        [SerializeField] private float eatTime = 1;
+        float drinkTime = 1;
+        float eatTime = 2;
 
         float minDist;
 
@@ -72,11 +73,24 @@ namespace AnimalNamespace
             {
                 Destroy(gameObject);
             }
-            else
+            
+            //if(currentReproduceUrge > currentHungry && currentReproduceUrge > currentThirsty && currentHungry < 50 && currentThirsty < 50)
+            //{
+            //    currentAction = Actions.SEARCHING_MATE;
+            //}
+
+            currentAction = (currentHungry > currentThirsty) ? Actions.SEARCHING_FOOD : Actions.SEARCHING_WATER;
+
+            switch (currentAction)
             {
-                hungryBar.UpdateValueBar(maxPropValue, currentHungry);
-                thirstyBar.UpdateValueBar(maxPropValue, currentThirsty);
+                case Actions.SEARCHING_FOOD: targetTag = "Food"; break;
+                case Actions.SEARCHING_WATER: targetTag = "Water"; break;
+                //case Actions.SEARCHING_MATE: targetTag = this.tag; break;
+                default: targetTag=""; break;
             }
+
+            hungryBar.UpdateValueBar(maxPropValue, currentHungry);
+            thirstyBar.UpdateValueBar(maxPropValue, currentThirsty);
         }
 
         void GetClosestTarget()
@@ -91,15 +105,6 @@ namespace AnimalNamespace
                     nearestTarget = target;
                 }
             }
-
-            switch (nearestTarget.tag)
-            {
-                case "Food":
-                    currentAction = Actions.SEARCHING_FOOD; break;
-                case "Water":
-                    currentAction = Actions.SEARCHING_WATER; break;
-                default: currentAction = Actions.IDLE; break;
-            }
         }
 
         IEnumerator Awaiter()
@@ -110,34 +115,38 @@ namespace AnimalNamespace
             minDist = Mathf.Infinity;
         }
 
+        IEnumerator Eat()
+        {
+            yield return new WaitForSeconds(eatTime);
+        }
+
         public void OnTriggerEnter(Collider other)
         {
             Debug.Log("Animal: " + this.gameObject.name + " triggered with " + other.gameObject.name);
             //Aquí, dependiendo del tipo de objeto con el que se encuentre, hará una cosa u otra
             if (other.gameObject.tag == "Water")
             {
-                this.targetTag = "Food";
+                currentThirsty = 0;
                 currentAction = Actions.DRINKING;
-                StartCoroutine(Awaiter());
             }
             if (other.gameObject.tag == "Food")
             {
-                this.targetTag = "Water";
+                currentHungry = 0;
                 currentAction = Actions.EATING;
-                StartCoroutine(Awaiter());
-
-                //Eat(other.gameObject);
+                StartCoroutine(Eat());
             }
+
+            StartCoroutine(Awaiter());
             //Reinicia el comportamiento del animal cuando alcanza un objetivo
             //this.Start();
         }
-        void Eat(GameObject gameObject)
-        {
-            Debug.Log("Animal: " + this.gameObject.name + " is eating " + gameObject.name);
-            allTargets.Remove(gameObject);
-            Destroy(gameObject);
-            GetClosestTarget();
-        }
+        //void Eat(GameObject gameObject)
+        //{
+        //    Debug.Log("Animal: " + this.gameObject.name + " is eating " + gameObject.name);
+        //    allTargets.Remove(gameObject);
+        //    Destroy(gameObject);
+        //    GetClosestTarget();
+        //}
 
     }
 
@@ -149,6 +158,7 @@ namespace AnimalNamespace
         EATING,
         SEARCHING_WATER,
         DRINKING,
+        SEARCHING_MATE,
     }
 
 }

@@ -104,7 +104,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5226059613990562162, guid: 18d6506e69389864aa120c2e1d867b6d, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: Food
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18d6506e69389864aa120c2e1d867b6d, type: 3}
