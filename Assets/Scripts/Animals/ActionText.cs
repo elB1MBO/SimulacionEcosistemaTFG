@@ -1,3 +1,4 @@
+using AnimalNamespace;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,19 +8,17 @@ public class ActionText : MonoBehaviour
 {
     public Text text;
 
-    [SerializeField] private BasicAnimal hen;
+    [SerializeField] private Animal animal;
+
+    private Actions currentAction;
 
     private void Start()
     {
-        text.text = "Idle";
+        currentAction = animal.getCurrentAction();
     }
 
     private void Update()
     {
-        // cambiar texto basico
-        if (hen.getHungry() > 45)
-        {
-            text.text = "Searching for food";
-        }
+        text.text = currentAction.ToString();
     }
 }
