@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrassResource : MonoBehaviour
+public class Plant : LivingEntity
 {
     // cantidad de comida que tiene aún el objeto
     [SerializeField] public float foodAmount = 100.0f;
     // si llega a 0, habrá que esperar a que crezca para que vuelva a ser comestible
-    [SerializeField] public bool edible = true;
+    [SerializeField] private bool edible = true;
+
+    public bool IsEdible() { return edible; }
 
     // Start is called before the first frame update
     void Start()
@@ -21,13 +23,14 @@ public class GrassResource : MonoBehaviour
     {
         //Comprueba en cada frame la cantidad de comida que tiene el objeto
         CheckFoodAmount();
-        CheckInput();
+        //CheckInput();
     }
 
     public void CheckFoodAmount()
     {
         if (foodAmount <= 5 || edible == false)
         {
+            this.gameObject.transform.GetChild(0).tag = "Growing";
             edible = false; //cuando llega a 0, la marca como no comestible
             Debug.Log("Ahora crece");
             Restore();
@@ -38,11 +41,19 @@ public class GrassResource : MonoBehaviour
         }
     }
 
+    public void Consume()
+    {
+        foodAmount -= 1f;
+    }
+
     public void Restore()
     {
-        foodAmount += 0.05f;
+        foodAmount += 0.025f;
         SetScale();
-        if(foodAmount >= 100) { edible = true; } // cuando llega a 100, la vuelve a marcar como comestible
+        if(foodAmount >= 100) {  // cuando llega a 100, la vuelve a marcar como comestible
+            edible = true;
+            this.gameObject.transform.GetChild(0).tag = "Food";
+        } 
     }
 
     public void SetScale()

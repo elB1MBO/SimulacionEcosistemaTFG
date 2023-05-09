@@ -1032,7 +1032,6 @@ MonoBehaviour:
   targetTag: Food
   allTargets: []
   nearestTarget: {fileID: 0}
-  eatTime: 1
   navigation: {fileID: 2391717790309714698}
   currentAction: 0
   hungryBar: {fileID: 970920308}
@@ -1092,6 +1091,10 @@ PrefabInstance:
     - target: {fileID: 4303844821561524, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 95943282229431942, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}

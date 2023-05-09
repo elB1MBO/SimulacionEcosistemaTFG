@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7022823418083211254}
   m_Layer: 0
   m_Name: BushResource
-  m_TagString: Food
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -124,7 +124,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.5026932, y: 0.51553077, z: 1.5134847}
+  m_Size: {x: 1.4, y: 0.51553077, z: 1.4}
   m_Center: {x: -0.07779816, y: 0.23830992, z: -0.14249325}
 --- !u!4 &6134584208917857872 stripped
 Transform:
