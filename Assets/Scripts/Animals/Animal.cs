@@ -66,23 +66,44 @@ public class Animal : MonoBehaviour
         }
 
         //------------------------------Animal-----------------------------------
+        UpdateValues();
+
+        SetAction();
+
+        DoAction();
+
+        SetAnimation();
+
+    }
+
+    void UpdateValues()
+    {
         currentReproduceUrge += 0.01f;
         reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
 
         currentHungry += 0.02f;
         currentThirsty += 0.015f;
 
+        hungryBar.UpdateValueBar(maxPropValue, currentHungry);
+        thirstyBar.UpdateValueBar(maxPropValue, currentThirsty);
+
         if (currentHungry >= maxPropValue || currentThirsty >= maxPropValue)
         {
             Destroy(gameObject);
         }
+    }
 
+    void SetAction()
+    {
         //if(currentReproduceUrge > currentHungry && currentReproduceUrge > currentThirsty && currentHungry < 50 && currentThirsty < 50)
         //{
         //    currentAction = Actions.SEARCHING_MATE;
         //}
 
-        currentAction = (currentHungry > currentThirsty) ? Actions.SEARCHING_FOOD : Actions.SEARCHING_WATER;
+        if (currentAction != Actions.EATING && currentAction != Actions.DRINKING)
+        {
+            currentAction = (currentHungry > currentThirsty) ? Actions.SEARCHING_FOOD : Actions.SEARCHING_WATER;
+        }
 
         switch (currentAction)
         {
@@ -91,12 +112,14 @@ public class Animal : MonoBehaviour
             //case Actions.SEARCHING_MATE: targetTag = this.tag; break;
             default: targetTag = ""; break;
         }
+    }
 
-        hungryBar.UpdateValueBar(maxPropValue, currentHungry);
-        thirstyBar.UpdateValueBar(maxPropValue, currentThirsty);
-
-        SetAnimation();
-
+    void DoAction()
+    {
+        if(currentAction == Actions.EATING)
+        {
+            Eat(this.plantTarget);
+        }
     }
 
     void GetClosestTarget()
@@ -113,9 +136,8 @@ public class Animal : MonoBehaviour
         }
     }
 
-    IEnumerator Awaiter()
+    IEnumerator Awaiter() //Main Awaiter function
     {
-        currentAction = Actions.EATING;
         yield return new WaitForSeconds(eatTime);
         allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
         nearestTarget = null;
@@ -131,7 +153,7 @@ public class Animal : MonoBehaviour
         while (currentHungry > 1 && plant.IsEdible())
         {
             plant.Consume();
-            currentHungry -= 1f;
+            currentHungry -= 0.01f;
         }
     }
 
@@ -139,6 +161,27 @@ public class Animal : MonoBehaviour
     {
         Debug.Log("Animal: " + this.gameObject.name + " triggered with " + other.gameObject.name);
         //Aquí, dependiendo del tipo de objeto con el que se encuentre, hará una cosa u otra
+        if (other.gameObject.tag == "Water")
+        {
+            currentThirsty = 0;
+            currentAction = Actions.DRINKING;
+        }
+        if (other.gameObject.tag == "Food")
+        {
+            //Como por ahora el unico tipo de comida es Plant, si el tag es food sabemos que es una planta, por lo que obtenemos el componente del padre del gameObject
+            this.plantTarget = other.GetComponentInParent<Plant>(); //Guardamos la planta objetivo
+            currentAction = Actions.EATING; //Actualizamos la accion
+            Debug.Log("Food amount: " + plantTarget.foodAmount);
+            //Eat(plantTarget);
+        }
+
+        //StartCoroutine(Awaiter());
+        //Reinicia el comportamiento del animal cuando alcanza un objetivo
+        //this.Start();
+    }
+
+    public void OnTriggerStay(Collider other)
+    {
         //if (other.gameObject.tag == "Water")
         //{
         //    currentThirsty = 0;
@@ -154,48 +197,22 @@ public class Animal : MonoBehaviour
         //}
 
         //StartCoroutine(Awaiter());
-        //Reinicia el comportamiento del animal cuando alcanza un objetivo
-        //this.Start();
     }
-
-    public void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.tag == "Water")
-        {
-            currentThirsty = 0;
-            currentAction = Actions.DRINKING;
-        }
-        if (other.gameObject.tag == "Food")
-        {
-            //Como por ahora el unico tipo de comida es Plant, si el tag es food sabemos que es una planta, por lo que obtenemos el componente del padre del gameObject
-            plantTarget = other.GetComponentInParent<Plant>();
-            currentAction = Actions.EATING;
-            Debug.Log("Food amount: " + plantTarget.foodAmount);
-            Eat(plantTarget);
-        }
-
-        StartCoroutine(Awaiter());
-    }
-    //void Eat(GameObject gameObject)
-    //{
-    //    Debug.Log("Animal: " + this.gameObject.name + " is eating " + gameObject.name);
-    //    allTargets.Remove(gameObject);
-    //    Destroy(gameObject);
-    //    GetClosestTarget();
-    //}
 
     void SetAnimation()
     {
         if (currentAction == Actions.SEARCHING_WATER || currentAction == Actions.SEARCHING_FOOD)
         {
-
+            //Hay que declarar la "actual" a false antes de indicarle la nueva
+            animation.SetBool("Eat", false);
             animation.SetBool("Walk", true);
         }
         if (currentAction == Actions.EATING || currentAction == Actions.DRINKING)
         {
+            animation.SetBool("Walk", false);
             animation.SetBool("Eat", true);
         }
-        if(currentAction == Actions.IDLE)
+        if (currentAction == Actions.IDLE)
         {
             animation.SetBool("Idle", true);
         }
