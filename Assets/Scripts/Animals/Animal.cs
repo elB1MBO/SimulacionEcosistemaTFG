@@ -70,7 +70,7 @@ public class Animal : MonoBehaviour
 
         SetAction();
 
-        DoAction();
+        //DoAction();
 
         SetAnimation();
 
@@ -78,19 +78,29 @@ public class Animal : MonoBehaviour
 
     void UpdateValues()
     {
-        currentReproduceUrge += 0.01f;
-        reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
 
-        currentHungry += 0.02f;
-        currentThirsty += 0.015f;
+        //Si esta comiendo, que llame a la funcion Eat?
+        if (currentAction == Actions.EATING)
+        {
+            Eat(this.plantTarget);
+        }
+        else
+        {
+            currentReproduceUrge += 0.01f;
+            
+
+            currentHungry += 0.02f;
+            currentThirsty += 0.015f;
+
+            if (currentHungry >= maxPropValue || currentThirsty >= maxPropValue)
+            {
+                Destroy(gameObject);
+            }
+        }
 
         hungryBar.UpdateValueBar(maxPropValue, currentHungry);
         thirstyBar.UpdateValueBar(maxPropValue, currentThirsty);
-
-        if (currentHungry >= maxPropValue || currentThirsty >= maxPropValue)
-        {
-            Destroy(gameObject);
-        }
+        reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
     }
 
     void SetAction()
@@ -111,14 +121,6 @@ public class Animal : MonoBehaviour
             case Actions.SEARCHING_WATER: targetTag = "Water"; break;
             //case Actions.SEARCHING_MATE: targetTag = this.tag; break;
             default: targetTag = ""; break;
-        }
-    }
-
-    void DoAction()
-    {
-        if(currentAction == Actions.EATING)
-        {
-            Eat(this.plantTarget);
         }
     }
 
@@ -150,11 +152,18 @@ public class Animal : MonoBehaviour
         navigation.destination = this.transform.position;
         //Si se encuentra con una planta, hay que decirle al navigation que el nuevo objetivo es la posición actual, para que no se coloque en el centro de la planta:
         nearestTarget = this.gameObject;
-        while (currentHungry > 1 && plant.IsEdible())
+
+        if (plant.IsEdible() && this.currentHungry > 1)
         {
-            plant.Consume();
-            currentHungry -= 0.01f;
+            plant.Consume(0.01f);
+            this.currentHungry -= 0.02f;
+        } else
+        {
+            //Cuando termine de comer, pasa a la accion IDLE para que en el ciclo pueda entrar en el if que establece la accion.
+            this.currentAction = Actions.IDLE;
+            StartCoroutine(Awaiter());
         }
+        
     }
 
     public void OnTriggerEnter(Collider other)
@@ -164,7 +173,8 @@ public class Animal : MonoBehaviour
         if (other.gameObject.tag == "Water")
         {
             currentThirsty = 0;
-            currentAction = Actions.DRINKING;
+            //currentAction = Actions.DRINKING;
+            StartCoroutine(Awaiter());
         }
         if (other.gameObject.tag == "Food")
         {
@@ -174,29 +184,6 @@ public class Animal : MonoBehaviour
             Debug.Log("Food amount: " + plantTarget.foodAmount);
             //Eat(plantTarget);
         }
-
-        //StartCoroutine(Awaiter());
-        //Reinicia el comportamiento del animal cuando alcanza un objetivo
-        //this.Start();
-    }
-
-    public void OnTriggerStay(Collider other)
-    {
-        //if (other.gameObject.tag == "Water")
-        //{
-        //    currentThirsty = 0;
-        //    currentAction = Actions.DRINKING;
-        //}
-        //if (other.gameObject.tag == "Food")
-        //{
-        //    //Como por ahora el unico tipo de comida es Plant, si el tag es food sabemos que es una planta, por lo que obtenemos el componente del padre del gameObject
-        //    plantTarget = other.GetComponentInParent<Plant>();
-        //    currentAction = Actions.EATING;
-        //    Debug.Log("Food amount: " + plantTarget.foodAmount);
-        //    Eat(plantTarget);
-        //}
-
-        //StartCoroutine(Awaiter());
     }
 
     void SetAnimation()

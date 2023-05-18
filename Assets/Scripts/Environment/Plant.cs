@@ -41,9 +41,9 @@ public class Plant : LivingEntity
         }
     }
 
-    public void Consume()
+    public void Consume(float amount)
     {
-        foodAmount -= 1f;
+        foodAmount -= amount/2;
     }
 
     public void Restore()
