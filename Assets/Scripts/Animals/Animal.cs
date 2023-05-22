@@ -9,6 +9,10 @@ using UnityEngine.AI;
  */
 public class Animal : MonoBehaviour
 {
+
+    [SerializeField] private Environment environment;
+
+    public float senseRange = 10f;
     public string targetTag;
     public List<GameObject> allTargets;
     public GameObject nearestTarget;
@@ -19,7 +23,7 @@ public class Animal : MonoBehaviour
 
     float minDist;
 
-    public NavMeshAgent navigation;
+    public NavMeshAgent navMeshAgent;
 
     public Actions currentAction = Actions.IDLE;
 
@@ -43,6 +47,8 @@ public class Animal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        navMeshAgent = GetComponent<NavMeshAgent>();
+
         animation = this.GetComponentInChildren<Animator>();
 
         hungryBar.UpdateValueBar(maxPropValue, currentHungry);
@@ -58,11 +64,22 @@ public class Animal : MonoBehaviour
 
         //-----------------------------Behaviour---------------------------------
 
-        if (allTargets.Count > 0)
+        if(currentAction == Actions.EXPLORING)
         {
-            GetClosestTarget();
-            navigation.destination = nearestTarget.transform.position;
+            //Si esta explorando, que busque un punto aleatorio, y establece el nearestTarget a ese punto
+            MoveToRandomPoint();
         }
+        else
+        {
+            if (allTargets.Count > 0)
+            {
+                GetClosestTarget();
+                Vector3 position = nearestTarget.transform.position;
+                navMeshAgent.SetDestination(position);
+            }
+        }
+
+        CheckAvailableTargets();
 
         //------------------------------Animal-----------------------------------
         UpdateValues();
@@ -73,6 +90,21 @@ public class Animal : MonoBehaviour
 
         SetAnimation();
 
+    }
+
+    //Funcion que comprueba en el environment los objetivos disponibles para el animal (en su campo de sentido)
+    void CheckAvailableTargets()
+    {
+        List<GameObject> availableTargets = environment.GetTargets(this.transform.position, this.senseRange, this.targetTag);
+
+        if(availableTargets.Count == 0) //Si no hay objetivos disponibles con ese tag
+        {
+            currentAction = Actions.EXPLORING;
+        }
+        else
+        {
+            currentAction = Actions.IDLE; //Si hay, pasa a IDLE, entrando en el bucle de búsqueda de nuevo
+        }
     }
 
     void UpdateValues()
@@ -133,10 +165,19 @@ public class Animal : MonoBehaviour
         foreach (GameObject target in allTargets)
         {
             float distance = Vector3.Distance(transform.position, target.transform.position);
-            if (distance < minDist && target != null)
+            Debug.Log("TARGET: " + target.name + ", DISTANCE: " + distance);
+            if (distance <= senseRange)
             {
-                minDist = distance;
-                nearestTarget = target;
+                if (distance < minDist && target != null)
+                {
+                    minDist = distance;
+                    nearestTarget = target;
+                }
+            }
+            else
+            {
+                Debug.Log("TARGET: " + target.name + " is too far.");
+                //nearestTarget = null;
             }
         }
     }
@@ -152,7 +193,7 @@ public class Animal : MonoBehaviour
     void Eat(Plant plant)
     {
         //Debug.Log("Comiendose " + plant.name + ", currentHungry: " + currentHungry + ", isEdible: " + plant.IsEdible());
-        navigation.destination = this.transform.position;
+        navMeshAgent.SetDestination(this.transform.position);
         //Si se encuentra con una planta, hay que decirle al navigation que el nuevo objetivo es la posición actual, para que no se coloque en el centro de la planta:
         nearestTarget = this.gameObject;
 
@@ -221,6 +262,33 @@ public class Animal : MonoBehaviour
         }
     }
 
+    //Funciones movimiento aleatorio
+    void MoveToRandomPoint()
+    {
+        //Genera un punto aleatorio dentro del NavMesh
+        Vector3 randomPoint = RandomNavMeshPoint();
+        
+        //Establece el punto como destino del NavMesh
+        navMeshAgent.SetDestination(randomPoint);
+        GameObject randomPointObject = new GameObject("Random Point");
+        randomPointObject.transform.transform.position = randomPoint; //ya que tenemos la posicion, se la damos al objeto vacio
+        nearestTarget = randomPointObject;
+
+    }
+    Vector3 RandomNavMeshPoint()
+    {
+        // Genera un punto aleatorio dentro del NavMesh
+        Vector3 randomDirection = Random.insideUnitSphere * 10.0f;
+        randomDirection += transform.position;
+        NavMeshHit hit;
+        Vector3 finalPosition = Vector3.zero;
+        if (NavMesh.SamplePosition(randomDirection, out hit, 10.0f, NavMesh.AllAreas))
+        {
+            finalPosition = hit.position;
+        }
+        return finalPosition;
+    }
+
 }
 
 public enum Actions
@@ -231,5 +299,6 @@ public enum Actions
     SEARCHING_WATER,
     DRINKING,
     SEARCHING_MATE,
+    EXPLORING,
 }
 
