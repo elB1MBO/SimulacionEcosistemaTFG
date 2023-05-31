@@ -12,16 +12,16 @@ public class Environment : MonoBehaviour
 
     public List<GameObject> GetTargets(Vector3 position, float range, string tag)
     {
-        Debug.Log("AAA " + position + " " + range + " " + tag);
+        //Debug.Log("Position: " + position + ", Range: " + range + ", Tag: " + tag);
         allTargets = GameObject.FindGameObjectsWithTag(tag).ToList();
-        Debug.Log("EEEE " + allTargets.ToString());
-        Debug.Log("IIII " + inRangeTargets.ToString());
         inRangeTargets = new List<GameObject>(); //Limpiamos el contenido de la lista
         foreach (GameObject target in allTargets)
         {
             distance = Vector3.Distance(transform.position, target.transform.position);
+            
             if(distance <= range)
             {
+                //Debug.Log("Distance: " + distance);
                 inRangeTargets.Add(target);
             }
         }

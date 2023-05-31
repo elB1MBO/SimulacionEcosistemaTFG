@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/ingameUI.uss?fileID=7433441132597879392&amp;guid=8daaacff07311fc4e8c5553715082e3e&amp;type=3#ingameUI" />
+    <ui:GroupBox name="PopulationBox">
+        <ui:Label text="Hen Population: " display-tooltip-when-elided="true" name="HenPopulationTitle" style="width: 62px; height: 18px; font-size: 18px; white-space: nowrap;" />
+        <ui:Label text="0" display-tooltip-when-elided="true" name="HenPopulationNumber" style="width: 93px; white-space: normal; position: absolute; top: 6px; left: 143px; font-size: 18px;" />
+    </ui:GroupBox>
+</ui:UXML>
