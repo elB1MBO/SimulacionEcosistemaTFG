@@ -1031,7 +1031,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   environment: {fileID: 8638805807759291931}
-  senseRange: 10
+  senseRange: 50
   targetTag: Food
   allTargets: []
   nearestTarget: {fileID: 0}
@@ -1113,6 +1113,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2391717790309714700}
     m_Modifications:
+    - target: {fileID: 2736351056873893896, guid: 7af58295df09e81469393b7e2b9c5831, type: 3}
+      propertyPath: animal
+      value: 
+      objectReference: {fileID: 1941917921419018262}
     - target: {fileID: 2736351056873893897, guid: 7af58295df09e81469393b7e2b9c5831, type: 3}
       propertyPath: m_Name
       value: Environment

@@ -153,14 +153,25 @@ public class Animal : MonoBehaviour
         {
             if (currentAction != Actions.EATING && currentAction != Actions.DRINKING)
             {
-                currentAction = (currentHungry > currentThirsty) ? Actions.SEARCHING_FOOD : Actions.SEARCHING_WATER;
+                if (currentReproduceUrge > currentHungry && currentReproduceUrge > currentThirsty && currentHungry < 60 && currentThirsty < 60)
+                {
+                    currentAction = Actions.SEARCHING_MATE;
+                }
+                else if (currentHungry > currentThirsty)
+                {
+                    currentAction = Actions.SEARCHING_FOOD;
+                }
+                else
+                {
+                    currentAction = Actions.SEARCHING_WATER;
+                }
             }
 
             switch (currentAction)
             {
                 case Actions.SEARCHING_FOOD: targetTag = "Food"; break;
                 case Actions.SEARCHING_WATER: targetTag = "Water"; break;
-                //case Actions.SEARCHING_MATE: targetTag = this.tag; break;
+                case Actions.SEARCHING_MATE: targetTag = "Hen"; break;
                 default: targetTag = ""; break;
             }
         }
@@ -188,6 +199,10 @@ public class Animal : MonoBehaviour
     {
         yield return new WaitForSeconds(waitTime);
         allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
+        if(targetTag == this.gameObject.tag)
+        {
+            allTargets.Remove(this.gameObject);
+        }
         nearestTarget = null;
         minDist = Mathf.Infinity;
     }
@@ -247,7 +262,7 @@ public class Animal : MonoBehaviour
 
     void SetAnimation()
     {
-        if (currentAction == Actions.SEARCHING_WATER || currentAction == Actions.SEARCHING_FOOD || currentAction == Actions.EXPLORING)
+        if (currentAction == Actions.SEARCHING_WATER || currentAction == Actions.SEARCHING_FOOD || currentAction == Actions.EXPLORING || currentAction == Actions.SEARCHING_MATE)
         {
             //Hay que declarar la "actual" a false antes de indicarle la nueva
             henAnimation.SetBool("Eat", false);
