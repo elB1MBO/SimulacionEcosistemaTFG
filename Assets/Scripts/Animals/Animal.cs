@@ -40,6 +40,9 @@ public class Animal : MonoBehaviour
     [SerializeField] private BasicBar hungryBar;
     [SerializeField] private BasicBar thirstyBar;
     [SerializeField] private BasicBar reproduceUrgeBar;
+
+    [SerializeField] private bool isFemale;
+
     public float getHungry() { return currentHungry; }
     public float getThirsty() { return currentThirsty; }
     public float getReproduceUrge() { return currentReproduceUrge; }
@@ -50,6 +53,8 @@ public class Animal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //SetGenre();
+
         navMeshAgent = GetComponent<NavMeshAgent>();
 
         henAnimation = this.GetComponentInChildren<Animator>();
@@ -66,13 +71,13 @@ public class Animal : MonoBehaviour
     {
 
         //-----------------------------Behaviour---------------------------------
-        if(currentAction != Actions.DRINKING && currentAction != Actions.EATING)
+        if(currentAction != Actions.DRINKING && currentAction != Actions.EATING && currentAction != Actions.MATING)
         {
             CheckAvailableTargets(); //Comprobamos si hay objetivos disponibles por el tag
         }
         
 
-        if (currentAction != Actions.EXPLORING) //si la accion es exploring, significa que no hay, por lo que asigna un punto aleatorio
+        if (currentAction != Actions.EXPLORING)
         {
             if (allTargets.Count > 0)
             {
@@ -81,8 +86,6 @@ public class Animal : MonoBehaviour
                 navMeshAgent.SetDestination(position);
             }
         }
-
-        //CheckAvailableTargets();
 
         //------------------------------Animal-----------------------------------
         UpdateValues();
@@ -124,13 +127,17 @@ public class Animal : MonoBehaviour
         {
             Drink();
         }
+        else if(currentAction == Actions.MATING)
+        {
+            Reproduce();
+        }
         else
         {
-            currentReproduceUrge += 0.01f;
+            //currentReproduceUrge += 0.01f;
             
 
-            currentHungry += 0.02f;
-            currentThirsty += 0.015f;
+            currentHungry += 0.01f;
+            currentThirsty += 0.01f;
 
             if (currentHungry >= maxPropValue || currentThirsty >= maxPropValue)
             {
@@ -145,10 +152,6 @@ public class Animal : MonoBehaviour
 
     void SetAction()
     {
-        //if(currentReproduceUrge > currentHungry && currentReproduceUrge > currentThirsty && currentHungry < 50 && currentThirsty < 50)
-        //{
-        //    currentAction = Actions.SEARCHING_MATE;
-        //}
         if(currentAction != Actions.EXPLORING)
         {
             if (currentAction != Actions.EATING && currentAction != Actions.DRINKING)
@@ -177,7 +180,7 @@ public class Animal : MonoBehaviour
         }
         
     }
-
+      
     void GetClosestTarget()
     {
         //importante la condicion de que el tag sea distinto, ya que si no siempre estará fija en el mismo target
@@ -240,6 +243,13 @@ public class Animal : MonoBehaviour
         }
     }
 
+    void Reproduce()
+    {
+        this.currentReproduceUrge = 0;
+        this.currentAction = Actions.IDLE;
+        StartCoroutine(Awaiter());
+    }
+
     public void OnTriggerEnter(Collider other)
     {
         Debug.Log("Animal: " + this.gameObject.name + " triggered with " + other.gameObject.name);
@@ -256,7 +266,22 @@ public class Animal : MonoBehaviour
             this.plantTarget = other.GetComponentInParent<Plant>(); //Guardamos la planta objetivo
             currentAction = Actions.EATING; //Actualizamos la accion
             //Debug.Log("Food amount: " + plantTarget.foodAmount);
-            //Eat(plantTarget);
+            //Eat(plantTarget);  
+        }
+        if (other.gameObject.tag == "Hen" && currentAction == Actions.SEARCHING_MATE)
+        {
+            Debug.Log("ESTAN TRIGGERED JODER");
+            currentAction = Actions.MATING;
+        }
+    }
+
+    public void OnCollisionEnter(Collision other)
+    {
+        Debug.Log("ESTAN COLISIONANDO CON " + other.gameObject.name);
+        if (other.gameObject.tag == "Hen" && currentAction == Actions.SEARCHING_MATE)
+        {
+            Debug.Log("ESTAN COLISIONANDO JODER");
+            currentAction = Actions.MATING;
         }
     }
 
@@ -273,7 +298,7 @@ public class Animal : MonoBehaviour
             henAnimation.SetBool("Walk", false);
             henAnimation.SetBool("Eat", true);
         }
-        if (currentAction == Actions.IDLE)
+        if (currentAction == Actions.IDLE || currentAction == Actions.MATING)
         {
             henAnimation.SetBool("Idle", true);
         }
@@ -326,6 +351,7 @@ public enum Actions
     SEARCHING_WATER,
     DRINKING,
     SEARCHING_MATE,
+    MATING,
     EXPLORING,
 }
 
