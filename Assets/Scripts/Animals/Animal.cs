@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.GraphicsBuffer;
 
 /**
  * Animal basic class
@@ -29,7 +30,7 @@ public class Animal : MonoBehaviour
 
     private float currentHungry = 1;
     private float currentThirsty = 1;
-    private float currentReproduceUrge = 10;
+    private float currentReproduceUrge = 1;
 
     [SerializeField] private BasicBar hungryBar;
     [SerializeField] private BasicBar thirstyBar;
@@ -45,8 +46,6 @@ public class Animal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //SetGenre();
-
         navMeshAgent = GetComponent<NavMeshAgent>();
 
         henAnimation = this.GetComponentInChildren<Animator>();
@@ -61,12 +60,23 @@ public class Animal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (allTargets.Count > 0)
         {
             GetClosestTarget();
-            Vector3 position = nearestTarget.transform.position;
-            navMeshAgent.SetDestination(position);
+            if (nearestTarget.tag == "Growing")
+            {
+                //Como su objetivo ya no esta disponible, tiene que buscar otro
+                StartCoroutine(Awaiter(waitTime)); 
+            }
+            if (nearestTarget.tag == "Water")
+            {
+                Vector3 targetClosestPoint = nearestTarget.GetComponent<Collider>().ClosestPoint(this.transform.position);
+                navMeshAgent.SetDestination(targetClosestPoint);
+            }else if(nearestTarget.tag == "Food") //Si es un bush, no importa, ya que se detiene al colisionar
+            {
+                Vector3 targetPosition = nearestTarget.transform.position;
+                navMeshAgent.SetDestination(targetPosition);
+            }
         }
 
         //------------------------------Animal-----------------------------------
@@ -74,16 +84,11 @@ public class Animal : MonoBehaviour
 
         SetAction();
 
-        //DoAction();
-
         SetAnimation();
-
     }
 
     void UpdateValues()
     {
-
-        //Si esta comiendo, que llame a la funcion Eat?
         if (currentAction == Actions.EATING)
         {
             Eat(this.plantTarget);
@@ -135,15 +140,15 @@ public class Animal : MonoBehaviour
     //Funcion que busca el target mas cercano de los diponibles      
     void GetClosestTarget()
     {
-        foreach (GameObject target in allTargets)
+        foreach (GameObject target in this.allTargets)
         {
             float distance = Vector3.Distance(transform.position, target.transform.position);
             if (distance <= senseRange)
             {
-                if (distance < minDist && target != null)
+                if (distance < this.minDist && target != null)
                 {
-                    minDist = distance;
-                    nearestTarget = target;
+                    this.minDist = distance;
+                    this.nearestTarget = target;
                 }
             }
         }
@@ -153,21 +158,20 @@ public class Animal : MonoBehaviour
     IEnumerator Awaiter(float seconds)
     {
         yield return new WaitForSeconds(seconds);
-        allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
-        if (targetTag == this.gameObject.tag)
+        this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
+        if (this.targetTag == this.gameObject.tag)
         {
-            allTargets.Remove(this.gameObject);
+            this.allTargets.Remove(this.gameObject);
         }
-        nearestTarget = null;
-        minDist = Mathf.Infinity;
+        this.nearestTarget = null;
+        this.minDist = Mathf.Infinity;
     }
 
     void Eat(Plant plant)
     {
-        //Debug.Log("Comiendose " + plant.name + ", currentHungry: " + currentHungry + ", isEdible: " + plant.IsEdible());
         navMeshAgent.SetDestination(this.transform.position);
         //Si se encuentra con una planta, hay que decirle al navigation que el nuevo objetivo es la posición actual, para que no se coloque en el centro de la planta:
-        nearestTarget = this.gameObject;
+        nearestTarget = this.gameObject; // -------> IMPORTANTE
 
         if (plant.IsEdible() && this.currentHungry > 1)
         {

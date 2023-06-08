@@ -23,7 +23,6 @@ public class Plant : MonoBehaviour
     {
         //Comprueba en cada frame la cantidad de comida que tiene el objeto
         CheckFoodAmount();
-        //CheckInput();
     }
 
     public void CheckFoodAmount()
