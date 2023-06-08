@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plant : LivingEntity
+public class Plant : MonoBehaviour
 {
     // cantidad de comida que tiene aún el objeto
     [SerializeField] public float foodAmount = 100.0f;

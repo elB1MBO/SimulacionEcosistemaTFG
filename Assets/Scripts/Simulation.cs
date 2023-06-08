@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class LivingEntity : MonoBehaviour
+public class Simulation : MonoBehaviour
 {
+    [SerializeField] public float startHenNumber;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,10 +15,5 @@ public class LivingEntity : MonoBehaviour
     void Update()
     {
         
-    }
-
-    void Die()
-    {
-        Destroy(this.gameObject);
     }
 }

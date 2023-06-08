@@ -1041,7 +1041,7 @@ MonoBehaviour:
   hungryBar: {fileID: 970920308}
   thirstyBar: {fileID: 724738650}
   reproduceUrgeBar: {fileID: 146944876}
-  genre: 0
+  isFemale: 0
 --- !u!54 &8145248011295276413
 Rigidbody:
   m_ObjectHideFlags: 0
