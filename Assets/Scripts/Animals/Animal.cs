@@ -23,7 +23,10 @@ public class Animal : MonoBehaviour
 
     public NavMeshAgent navMeshAgent;
 
-    public Actions currentAction = Actions.IDLE;
+    [SerializeField] private Actions currentAction = Actions.IDLE;
+
+    [SerializeField] private GameObject animalContainer;
+    public void SetAnimalContainer(GameObject animalContainer) { this.animalContainer = animalContainer; }
 
     //Properties
     private float maxPropValue = 100;
@@ -36,10 +39,10 @@ public class Animal : MonoBehaviour
     [SerializeField] private BasicBar thirstyBar;
     [SerializeField] private BasicBar reproduceUrgeBar;
 
-    public float getHungry() { return currentHungry; }
-    public float getThirsty() { return currentThirsty; }
-    public float getReproduceUrge() { return currentReproduceUrge; }
-    public Actions getCurrentAction() { return currentAction; }
+    public float GetHungry() { return currentHungry; }
+    public float GetThirsty() { return currentThirsty; }
+    public float GetReproduceUrge() { return currentReproduceUrge; }
+    public Actions GetCurrentAction() { return currentAction; }
 
     Animator henAnimation;
 
@@ -63,7 +66,7 @@ public class Animal : MonoBehaviour
         if (allTargets.Count > 0)
         {
             GetClosestTarget();
-            if (nearestTarget.tag == "Growing")
+            if (nearestTarget.tag == "Growing") //Más tarde habra que ampliar esta funcionalidad para cuando el objetivo deje de existir
             {
                 //Como su objetivo ya no esta disponible, tiene que buscar otro
                 StartCoroutine(Awaiter(waitTime)); 
@@ -73,6 +76,10 @@ public class Animal : MonoBehaviour
                 Vector3 targetClosestPoint = nearestTarget.GetComponent<Collider>().ClosestPoint(this.transform.position);
                 navMeshAgent.SetDestination(targetClosestPoint);
             }else if(nearestTarget.tag == "Food") //Si es un bush, no importa, ya que se detiene al colisionar
+            {
+                Vector3 targetPosition = nearestTarget.transform.position;
+                navMeshAgent.SetDestination(targetPosition);
+            } else if(nearestTarget.tag == this.gameObject.tag)
             {
                 Vector3 targetPosition = nearestTarget.transform.position;
                 navMeshAgent.SetDestination(targetPosition);
@@ -97,9 +104,13 @@ public class Animal : MonoBehaviour
         {
             Drink();
         }
+        else if(currentAction == Actions.MATING)
+        {
+            Reproduce();
+        }
         else
         {
-            //currentReproduceUrge += 0.01f;
+            currentReproduceUrge += 0.015f;
 
             currentHungry += 0.01f;
             currentThirsty += 0.01f;
@@ -117,9 +128,15 @@ public class Animal : MonoBehaviour
 
     void SetAction()
     {
-        if (currentAction != Actions.EATING && currentAction != Actions.DRINKING)
+        Actions action = currentAction;
+        if (currentAction != Actions.EATING && currentAction != Actions.DRINKING && currentAction != Actions.MATING) //Acciones que no se pueden interrumpir
         {
-            if (currentHungry > currentThirsty)
+            if(currentReproduceUrge > 40 && currentHungry < 40 && currentThirsty < 40)
+            {
+                Debug.Log("Ahora toca reproducirse");
+                currentAction = Actions.SEARCHING_MATE;
+            }
+            else if (currentHungry > currentThirsty)
             {
                 currentAction = Actions.SEARCHING_FOOD;
             }
@@ -133,7 +150,14 @@ public class Animal : MonoBehaviour
         {
             case Actions.SEARCHING_FOOD: targetTag = "Food"; break;
             case Actions.SEARCHING_WATER: targetTag = "Water"; break;
+            case Actions.SEARCHING_MATE: targetTag = this.gameObject.tag; break;
             default: targetTag = ""; break;
+        }
+
+        //SI HA CAMBIADO LA ACCION, QUE VUELVA A LLAMAR AL AWAITER
+        if (currentAction != action)
+        {
+            StartCoroutine(Awaiter(waitTime));
         }
     }
 
@@ -159,7 +183,7 @@ public class Animal : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
-        if (this.targetTag == this.gameObject.tag)
+        if (targetTag == this.gameObject.tag)
         {
             this.allTargets.Remove(this.gameObject);
         }
@@ -182,7 +206,7 @@ public class Animal : MonoBehaviour
         {
             //Cuando termine de comer, pasa a la accion IDLE para que en el ciclo pueda entrar en el if que establece la accion.
             this.currentAction = Actions.IDLE;
-            StartCoroutine(Awaiter(waitTime));
+            //StartCoroutine(Awaiter(waitTime));
         }
 
     }
@@ -191,12 +215,26 @@ public class Animal : MonoBehaviour
     {
         if (currentThirsty > 1)
         {
-            this.currentThirsty -= 0.04f;
+            currentThirsty -= 0.04f;
         }
         else
         {
-            this.currentAction = Actions.IDLE;
-            StartCoroutine(Awaiter(waitTime));
+            currentAction = Actions.IDLE;
+            //StartCoroutine(Awaiter(waitTime));
+        }
+    }
+    
+    void Reproduce()
+    {
+        if(currentReproduceUrge > 1)
+        {
+            currentReproduceUrge -= 1;
+            Debug.Log("FOLLANDOOO");
+        }
+        else
+        {
+            currentAction = Actions.IDLE;
+            Instantiate(this.gameObject, gameObject.transform.position, Quaternion.identity, animalContainer.transform);
         }
     }
 
@@ -213,7 +251,10 @@ public class Animal : MonoBehaviour
             //Como por ahora el unico tipo de comida es Plant, si el tag es food sabemos que es una planta, por lo que obtenemos el componente del padre del gameObject
             this.plantTarget = other.GetComponentInParent<Plant>(); //Guardamos la planta objetivo
             currentAction = Actions.EATING; //Actualizamos la accion
-
+        }
+        if(other.gameObject.tag == "Hen" && currentAction == Actions.SEARCHING_MATE)
+        {
+            currentAction = Actions.MATING;
         }
     }
 
@@ -226,7 +267,7 @@ public class Animal : MonoBehaviour
             henAnimation.SetBool("Eat", false);
             henAnimation.SetBool("Walk", true);
         }
-        if (currentAction == Actions.EATING || currentAction == Actions.DRINKING)
+        if (currentAction == Actions.EATING || currentAction == Actions.DRINKING || currentAction == Actions.MATING)
         {
             henAnimation.SetBool("Walk", false);
             henAnimation.SetBool("Eat", true);
@@ -245,5 +286,7 @@ public enum Actions
     EATING,
     SEARCHING_WATER,
     DRINKING,
+    SEARCHING_MATE,
+    MATING,
 }
 

@@ -11,6 +11,6 @@ public class ActionText : MonoBehaviour
 
     private void Update()
     {
-        text.text = animal.getCurrentAction().ToString();
+        text.text = animal.GetCurrentAction().ToString();
     }
 }
