@@ -110,7 +110,8 @@ public class Animal : MonoBehaviour
         }
         else
         {
-            currentReproduceUrge += 0.015f;
+            if(currentReproduceUrge < maxPropValue) { currentReproduceUrge += 0.015f; }
+            
 
             currentHungry += 0.01f;
             currentThirsty += 0.01f;
@@ -131,9 +132,8 @@ public class Animal : MonoBehaviour
         Actions action = currentAction;
         if (currentAction != Actions.EATING && currentAction != Actions.DRINKING && currentAction != Actions.MATING) //Acciones que no se pueden interrumpir
         {
-            if(currentReproduceUrge > 40 && currentHungry < 40 && currentThirsty < 40)
+            if(currentReproduceUrge > 40 && currentHungry < 40 && currentThirsty < 40 && currentAction != Actions.MATING)
             {
-                Debug.Log("Ahora toca reproducirse");
                 currentAction = Actions.SEARCHING_MATE;
             }
             else if (currentHungry > currentThirsty)
@@ -151,7 +151,7 @@ public class Animal : MonoBehaviour
             case Actions.SEARCHING_FOOD: targetTag = "Food"; break;
             case Actions.SEARCHING_WATER: targetTag = "Water"; break;
             case Actions.SEARCHING_MATE: targetTag = this.gameObject.tag; break;
-            default: targetTag = ""; break;
+            default: targetTag = targetTag; break;
         }
 
         //SI HA CAMBIADO LA ACCION, QUE VUELVA A LLAMAR AL AWAITER
@@ -182,6 +182,7 @@ public class Animal : MonoBehaviour
     IEnumerator Awaiter(float seconds)
     {
         yield return new WaitForSeconds(seconds);
+        if(targetTag == null || targetTag == string.Empty) { this.gameObject.name = "Gallina"; Debug.LogError("Target tag es nulo: " + this.gameObject.name); }
         this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
         if (targetTag == this.gameObject.tag)
         {
@@ -228,13 +229,16 @@ public class Animal : MonoBehaviour
     {
         if(currentReproduceUrge > 1)
         {
-            currentReproduceUrge -= 1;
-            Debug.Log("FOLLANDOOO");
+            currentReproduceUrge -= 10;
         }
         else
         {
             currentAction = Actions.IDLE;
-            Instantiate(this.gameObject, gameObject.transform.position, Quaternion.identity, animalContainer.transform);
+            //Add genetic factor
+            
+            GameObject newAnimal = Instantiate(this.gameObject, gameObject.transform.position, Quaternion.identity, animalContainer.transform);
+            float scale = this.gameObject.transform.localScale.x;
+            newAnimal.transform.localScale = new Vector3(scale * 1.2f, scale * 1.2f, scale * 1.2f);
         }
     }
 
@@ -252,7 +256,7 @@ public class Animal : MonoBehaviour
             this.plantTarget = other.GetComponentInParent<Plant>(); //Guardamos la planta objetivo
             currentAction = Actions.EATING; //Actualizamos la accion
         }
-        if(other.gameObject.tag == "Hen" && currentAction == Actions.SEARCHING_MATE)
+        if(other.gameObject.tag == "Hen" && currentAction == Actions.SEARCHING_MATE) // && other.GetComponent<Animal>().GetCurrentAction() == Actions.SEARCHING_MATE
         {
             currentAction = Actions.MATING;
         }
@@ -261,7 +265,7 @@ public class Animal : MonoBehaviour
 
     void SetAnimation()
     {
-        if (currentAction == Actions.SEARCHING_WATER || currentAction == Actions.SEARCHING_FOOD)
+        if (currentAction == Actions.SEARCHING_WATER || currentAction == Actions.SEARCHING_FOOD || currentAction == Actions.SEARCHING_MATE)
         {
             //Hay que declarar la "actual" a false antes de indicarle la nueva
             henAnimation.SetBool("Eat", false);
