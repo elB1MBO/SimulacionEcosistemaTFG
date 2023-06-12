@@ -47,7 +47,7 @@ public class Plant : MonoBehaviour
 
     public void Restore()
     {
-        foodAmount += 0.025f;
+        foodAmount += 0.02f;
         SetScale();
         if(foodAmount >= 100) {  // cuando llega a 100, la vuelve a marcar como comestible
             edible = true;

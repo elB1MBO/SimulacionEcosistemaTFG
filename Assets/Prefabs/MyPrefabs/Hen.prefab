@@ -847,7 +847,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Hungry
+  m_Text: Hunger
 --- !u!1 &2146887550
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,7 +927,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Thirsty
+  m_Text: 'Thirst
 
 '
 --- !u!1 &2391717790309714696
@@ -978,7 +978,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.25
-  m_Speed: 3.5
+  m_Speed: 1
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 800
@@ -1036,6 +1036,8 @@ MonoBehaviour:
   nearestTarget: {fileID: 0}
   navMeshAgent: {fileID: 0}
   currentAction: 0
+  animalContainer: {fileID: 0}
+  currentHunger: 0
   hungryBar: {fileID: 970920308}
   thirstyBar: {fileID: 724738650}
   reproduceUrgeBar: {fileID: 146944876}

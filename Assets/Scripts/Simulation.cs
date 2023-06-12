@@ -14,7 +14,7 @@ public class Simulation : MonoBehaviour
         //Spawn 10 hens at random positions
         for (int i = 0; i < startHenNumber; i++)
         {
-            GameObject newHen = Instantiate(Hen, new Vector3(Random.RandomRange(30f, 50f), 1, Random.RandomRange(30f, 50f)), Quaternion.Euler(0, 0, 0), HenContainer.transform);
+            GameObject newHen = Instantiate(Hen, new Vector3(Random.Range(30f, 50f), 1, Random.Range(30f, 50f)), Quaternion.Euler(0, 0, 0), HenContainer.transform);
             newHen.GetComponent<Animal>().SetAnimalContainer(HenContainer);
         }
     }
@@ -22,6 +22,15 @@ public class Simulation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Time.timeScale *= 2;
+        }
+        else if (Input.GetKeyDown(KeyCode.L))
+        {
+            Time.timeScale *= 0.5f;
+        }
     }
+
+    
 }
