@@ -13,6 +13,7 @@ public class Animal : MonoBehaviour
     public float senseRange;
     public string targetTag;
     public List<GameObject> allTargets;
+    [SerializeField] private List<GameObject> irtargets;
     public GameObject nearestTarget;
 
     private Plant plantTarget;
@@ -20,7 +21,7 @@ public class Animal : MonoBehaviour
     float waitTime = 1;
 
     float minDist;
-    float speed = 2.5f;
+    [SerializeField] float speed = 2.5f;
 
     [SerializeField] float energyWasteValue = 0.01f;
     [SerializeField] float energyRestoreValue = 0.02f;
@@ -58,7 +59,7 @@ public class Animal : MonoBehaviour
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        navMeshAgent.speed = speed;
+        navMeshAgent.speed = this.speed;
 
         henAnimation = this.GetComponentInChildren<Animator>();
 
@@ -76,30 +77,8 @@ public class Animal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (allTargets.Count > 0)
-        {
-            GetClosestTarget();
-            if(nearestTarget == null || nearestTarget.tag == "Growing")
-            {
-                StartCoroutine(Awaiter(waitTime));
-            }
-            else if (nearestTarget.tag == "Water")
-            {
-                Vector3 targetClosestPoint = nearestTarget.GetComponent<Collider>().ClosestPoint(this.transform.position);
-                navMeshAgent.SetDestination(targetClosestPoint);
-            }
-            else if (nearestTarget.tag == "Food" || nearestTarget.tag == this.gameObject.tag) //Si es un bush, no importa, ya que se detiene al colisionar
-            {
-                Vector3 targetPosition = nearestTarget.transform.position;
-                navMeshAgent.SetDestination(targetPosition);
-            }
-        }
-        else
-        {
-            MoveToRandomPoint();
-        }
+        SetTarget();
 
-        //------------------------------Animal-----------------------------------
         UpdateValues();
 
         SetAction();
@@ -135,7 +114,7 @@ public class Animal : MonoBehaviour
     void SetAction()
     {
         Actions action = currentAction;
-        if(allTargets.Count == 0) { currentAction = Actions.EXPLORING; }
+        
         if (currentAction != Actions.EATING && currentAction != Actions.DRINKING && currentAction != Actions.MATING) //Acciones que no se pueden interrumpir
         {
             if (currentReproduceUrge > 40 && currentHunger < 40 && currentThirst < 40 && currentAction != Actions.MATING)
@@ -166,11 +145,58 @@ public class Animal : MonoBehaviour
             StartCoroutine(Awaiter(waitTime));
         }
     }
+    void SetTarget()
+    {
+        List<GameObject> inRangeTargets = GetInRangeTargets();
+        irtargets = inRangeTargets;
+
+        if(inRangeTargets.Count == 0)
+        {
+            Explore();
+        }
+        else
+        {
+            randomPointSetted = false;
+            GetClosestTarget(inRangeTargets);
+
+            if (nearestTarget == null || nearestTarget.tag == "Growing")
+            {
+                StartCoroutine(Awaiter(waitTime));
+            }
+            else if (nearestTarget.tag == "Water")
+            {
+                Vector3 targetClosestPoint = nearestTarget.GetComponent<Collider>().ClosestPoint(this.transform.position);
+                navMeshAgent.SetDestination(targetClosestPoint);
+            }
+            else if (nearestTarget.tag == "Food" || nearestTarget.tag == this.gameObject.tag) //Si es un bush, no importa, ya que se detiene al colisionar
+            {
+                Vector3 targetPosition = nearestTarget.transform.position;
+                navMeshAgent.SetDestination(targetPosition);
+            }
+        }
+        
+    }
+    List<GameObject> GetInRangeTargets()
+    {
+        List<GameObject> inRangeTargets = new List<GameObject>();
+
+        //Busca en la lista de todos los objetivos con el tag los que están dentro del rango
+        foreach (var target in this.allTargets)
+        {
+            float dist = Vector3.Distance(this.gameObject.transform.position, target.transform.position);
+            if(dist <= this.senseRange)
+            {
+                inRangeTargets.Add(target);
+            }
+        }
+
+        return inRangeTargets;
+    }
 
     //Funcion que busca el target mas cercano de los diponibles      
-    void GetClosestTarget()
+    void GetClosestTarget(List<GameObject> inRangeTargets)
     {
-        foreach (GameObject target in this.allTargets)
+        foreach (GameObject target in inRangeTargets)
         {
             if (target != null)
             {
@@ -249,6 +275,35 @@ public class Animal : MonoBehaviour
         }
     }
 
+    void Explore()
+    {
+        Debug.Log(this.gameObject.name + " tiene que explorar");
+        if (!randomPointSetted)
+        {
+            Debug.Log("Entra en el if");
+            //Genera un punto aleatorio dentro del NavMesh
+            randomPoint = RandomNavMeshPoint();
+            navMeshAgent.SetDestination(randomPoint); 
+            randomPointSetted = true;
+        }
+        if (this.transform.position == randomPoint)
+        {
+            //Destroy(randomPointObject.gameObject);
+            randomPointSetted = false;
+        }
+    }
+    Vector3 RandomNavMeshPoint()
+    {
+        Vector3 randomDirection = Random.insideUnitSphere * 10.0f;
+        randomDirection += this.transform.position;
+        Vector3 finalPosition = Vector3.zero;
+        if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, 10f, NavMesh.AllAreas))
+        {
+            finalPosition = hit.position;
+        }
+        return finalPosition;
+    }
+
     public void OnTriggerEnter(Collider other)
     {
         //Aquí, dependiendo del tipo de objeto con el que se encuentre, hará una cosa u otra
@@ -298,38 +353,6 @@ public class Animal : MonoBehaviour
         {
             henAnimation.SetBool("Idle", true);
         }
-    }
-
-    void MoveToRandomPoint()
-    {
-        if (!randomPointSetted)
-        {
-            //Genera un punto aleatorio dentro del NavMesh
-            randomPoint = RandomNavMeshPoint();
-            //Establece el punto como destino del NavMesh
-            navMeshAgent.SetDestination(randomPoint);
-            randomPointObject = new GameObject("Random Point");
-            randomPointObject.tag = "RandomPoint";
-            randomPointObject.transform.transform.position = randomPoint; //ya que tenemos la posicion, se la damos al objeto vacio
-            nearestTarget = randomPointObject;
-            randomPointSetted = true;
-        }
-        if (this.transform.position == randomPoint)
-        {
-            Destroy(randomPointObject.gameObject);
-            randomPointSetted = false;
-        }
-    }
-    Vector3 RandomNavMeshPoint()
-    {
-        Vector3 randomDirection = Random.insideUnitSphere * 10.0f;
-        randomDirection += this.transform.position;
-        Vector3 finalPosition = Vector3.zero;
-        if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, 10f, NavMesh.AllAreas))
-        {
-            finalPosition = hit.position;
-        }
-        return finalPosition;
     }
 }
 

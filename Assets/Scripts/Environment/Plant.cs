@@ -63,12 +63,4 @@ public class Plant : MonoBehaviour
         float scale = foodAmount / 100;
         transform.localScale = new Vector3(scale, scale, scale);
     }
-
-    //Para comprobar la funcionalidad del código, simularemos que esta siendo comida al presionar una tecla
-    public void CheckInput()
-    {
-        if(Input.GetKey(KeyCode.E) && edible) {
-            foodAmount -= 0.1f;
-        }
-    }
 }
