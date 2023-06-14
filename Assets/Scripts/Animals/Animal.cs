@@ -191,7 +191,7 @@ public class Animal : MonoBehaviour
     IEnumerator Awaiter(float seconds)
     {
         yield return new WaitForSeconds(seconds);
-        if (targetTag == null || targetTag == string.Empty) { this.gameObject.name = "Gallina"; }
+        //if (targetTag == null || targetTag == string.Empty) { this.gameObject.name = "Gallina"; }
         this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
         if (targetTag == this.gameObject.tag)
         {
