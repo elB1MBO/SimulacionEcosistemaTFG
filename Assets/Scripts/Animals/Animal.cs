@@ -77,6 +77,8 @@ public class Animal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GetAllTargets();
+
         SetTarget();
 
         UpdateValues();
@@ -218,13 +220,18 @@ public class Animal : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         //if (targetTag == null || targetTag == string.Empty) { this.gameObject.name = "Gallina"; }
+        GetAllTargets();
+        this.nearestTarget = null;
+        this.minDist = Mathf.Infinity;
+    }
+
+    void GetAllTargets()
+    {
         this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
         if (targetTag == this.gameObject.tag)
         {
             this.allTargets.Remove(this.gameObject);
         }
-        this.nearestTarget = null;
-        this.minDist = Mathf.Infinity;
     }
 
     void Eat(Plant plant)
