@@ -51,9 +51,10 @@ public class Animal : MonoBehaviour
 
     Animator henAnimation;
 
-    Vector3 randomPoint;
-    GameObject randomPointObject;
-    bool randomPointSetted = false; 
+    [SerializeField] Vector3 randomPoint;
+    //[SerializeField] GameObject randomPointObject;
+    bool randomPointSetted = false;
+    [SerializeField] Vector3 destino;
 
     // Start is called before the first frame update
     void Start()
@@ -86,6 +87,8 @@ public class Animal : MonoBehaviour
         SetAction();
 
         SetAnimation();
+
+        destino = this.navMeshAgent.destination;
     }
 
     void UpdateValues()
@@ -277,25 +280,23 @@ public class Animal : MonoBehaviour
             //Add genetic factor
 
             GameObject newAnimal = Instantiate(this.gameObject, gameObject.transform.position, Quaternion.identity, animalContainer.transform);
-            float scale = this.gameObject.transform.localScale.x;
-            newAnimal.transform.localScale = new Vector3(scale * 1.2f, scale * 1.2f, scale * 1.2f);
+            //float scale = this.gameObject.transform.localScale.x;
+            //newAnimal.transform.localScale = new Vector3(scale * 1.2f, scale * 1.2f, scale * 1.2f);
         }
     }
 
     void Explore()
     {
-        Debug.Log(this.gameObject.name + " tiene que explorar");
+        
         if (!randomPointSetted)
         {
-            Debug.Log("Entra en el if");
             //Genera un punto aleatorio dentro del NavMesh
             randomPoint = RandomNavMeshPoint();
             navMeshAgent.SetDestination(randomPoint); 
             randomPointSetted = true;
         }
-        if (this.transform.position == randomPoint)
+        if (Vector3.Distance(this.transform.position, randomPoint) <= 1)
         {
-            //Destroy(randomPointObject.gameObject);
             randomPointSetted = false;
         }
     }
@@ -311,7 +312,7 @@ public class Animal : MonoBehaviour
         return finalPosition;
     }
 
-    public void OnTriggerEnter(Collider other)
+    public void OnTriggerEvent(Collider other)
     {
         //Aquí, dependiendo del tipo de objeto con el que se encuentre, hará una cosa u otra
         if (other.gameObject.tag == "Water" && currentAction == Actions.SEARCHING_WATER)
@@ -328,10 +329,20 @@ public class Animal : MonoBehaviour
         {
             currentAction = Actions.MATING;
         }
-        if(other.gameObject.tag == "RandomPoint")
+        if (other.gameObject.tag == "RandomPoint")
         {
             Destroy(other.gameObject);
         }
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        OnTriggerEvent(other);
+    }
+
+    public void OnTriggerStay(Collider other)
+    {
+        OnTriggerEvent(other);
     }
 
 
