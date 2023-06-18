@@ -9,6 +9,7 @@ public class Plant : MonoBehaviour
     [SerializeField] public float foodAmount = 100.0f;
     // si llega a 0, habrá que esperar a que crezca para que vuelva a ser comestible
     [SerializeField] private bool edible = true;
+    [SerializeField] private int hensEating = 0;
 
     public bool IsEdible() { return edible; }
 
@@ -22,9 +23,16 @@ public class Plant : MonoBehaviour
     void Update()
     {
         //Comprueba en cada frame la cantidad de comida que tiene el objeto
+        CheckHensEating();
         CheckFoodAmount();
     }
-
+    public void CheckHensEating()
+    {
+        if(hensEating > 5) 
+        { 
+            //Debug.Log("Limite superado"); 
+        }
+    }
     public void CheckFoodAmount()
     {
         if (foodAmount <= 5 || edible == false)
@@ -63,4 +71,10 @@ public class Plant : MonoBehaviour
         float scale = foodAmount / 100;
         transform.localScale = new Vector3(scale, scale, scale);
     }
+
+    public void OnBushCollision(int isHen) //1 for enter hen, -1 when exits a hen
+    {
+        hensEating+=isHen;
+    }
+
 }

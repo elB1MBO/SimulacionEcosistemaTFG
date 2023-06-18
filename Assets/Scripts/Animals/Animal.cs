@@ -292,16 +292,12 @@ public class Animal : MonoBehaviour
             randomPoint = RandomNavMeshPoint();
             navMeshAgent.SetDestination(randomPoint); 
             randomPointSetted = true;
-
-            //randomPointObject = new GameObject();
-            //randomPointObject = Instantiate(this.randomPointObject, randomPoint, Quaternion.identity, randomPointsContainer.transform);
-            //randomPointObject.transform.position = randomPoint;
-            //randomPointObject.tag = "RandomPoint";
         }
         if (Vector3.Distance(this.transform.position, randomPoint) <= 1)
         {
             randomPointSetted = false;
-        }else if(Vector3.Distance(this.transform.position, destino) <= 1)
+        }
+        else if(Vector3.Distance(this.transform.position, destino) <= 1)
         {
             this.navMeshAgent.SetDestination(randomPoint);
         }
