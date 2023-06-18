@@ -52,8 +52,7 @@ public class Animal : MonoBehaviour
     Animator henAnimation;
 
     [SerializeField] Vector3 randomPoint;
-    //[SerializeField] GameObject randomPointObject;
-    bool randomPointSetted = false;
+    [SerializeField] bool randomPointSetted = false;
     [SerializeField] Vector3 destino;
 
     // Start is called before the first frame update
@@ -287,19 +286,27 @@ public class Animal : MonoBehaviour
 
     void Explore()
     {
-        
         if (!randomPointSetted)
         {
             //Genera un punto aleatorio dentro del NavMesh
             randomPoint = RandomNavMeshPoint();
             navMeshAgent.SetDestination(randomPoint); 
             randomPointSetted = true;
+
+            //randomPointObject = new GameObject();
+            //randomPointObject = Instantiate(this.randomPointObject, randomPoint, Quaternion.identity, randomPointsContainer.transform);
+            //randomPointObject.transform.position = randomPoint;
+            //randomPointObject.tag = "RandomPoint";
         }
         if (Vector3.Distance(this.transform.position, randomPoint) <= 1)
         {
             randomPointSetted = false;
+        }else if(Vector3.Distance(this.transform.position, destino) <= 1)
+        {
+            this.navMeshAgent.SetDestination(randomPoint);
         }
     }
+
     Vector3 RandomNavMeshPoint()
     {
         Vector3 randomDirection = Random.insideUnitSphere * 10.0f;

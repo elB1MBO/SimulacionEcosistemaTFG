@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 146944875}
   - component: {fileID: 146944874}
   - component: {fileID: 146944876}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ReproduceUrgeBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 724738649}
   - component: {fileID: 724738648}
   - component: {fileID: 724738650}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ThirstyBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 793087762}
   - component: {fileID: 793087761}
   - component: {fileID: 793087760}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ActionText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 808282806}
   - component: {fileID: 808282808}
   - component: {fileID: 808282807}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,7 +352,7 @@ GameObject:
   - component: {fileID: 970920310}
   - component: {fileID: 970920309}
   - component: {fileID: 970920308}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HungryBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -441,7 +441,7 @@ GameObject:
   - component: {fileID: 1328654152}
   - component: {fileID: 1328654154}
   - component: {fileID: 1328654153}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HungryBarBg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -519,7 +519,7 @@ GameObject:
   - component: {fileID: 1679494705}
   - component: {fileID: 1679494707}
   - component: {fileID: 1679494706}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ReproduceUrgeBarBg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -597,7 +597,7 @@ GameObject:
   - component: {fileID: 1789356747}
   - component: {fileID: 1789356749}
   - component: {fileID: 1789356748}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ThirstyBarBg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -676,7 +676,7 @@ GameObject:
   - component: {fileID: 1944538505}
   - component: {fileID: 1944538504}
   - component: {fileID: 1944538503}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hen Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -779,7 +779,7 @@ GameObject:
   - component: {fileID: 2107939158}
   - component: {fileID: 2107939160}
   - component: {fileID: 2107939159}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -859,7 +859,7 @@ GameObject:
   - component: {fileID: 2146887551}
   - component: {fileID: 2146887553}
   - component: {fileID: 2146887552}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -944,7 +944,7 @@ GameObject:
   - component: {fileID: 1427332777}
   - component: {fileID: 1941917921419018262}
   - component: {fileID: 8145248011295276413}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hen
   m_TagString: Hen
   m_Icon: {fileID: 0}
@@ -1045,6 +1045,9 @@ MonoBehaviour:
   hungryBar: {fileID: 970920308}
   thirstyBar: {fileID: 724738650}
   reproduceUrgeBar: {fileID: 146944876}
+  randomPoint: {x: 0, y: 0, z: 0}
+  randomPointSetted: 0
+  destino: {x: 0, y: 0, z: 0}
 --- !u!54 &8145248011295276413
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1068,9 +1071,105 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2391717790309714700}
     m_Modifications:
+    - target: {fileID: 1005819627161744, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1048941694379062, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1053436465867894, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1055748561691468, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200174205398646, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1206895184726438, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1209584140994428, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1311290861401530, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
       propertyPath: m_Name
       value: Toon Chicken
+      objectReference: {fileID: 0}
+    - target: {fileID: 1311290861401530, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1325880688823160, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1329520448308880, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1403942012693732, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1405209552365376, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1483971705230866, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1532233678405772, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1570336889569132, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1574346125936874, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1585147985598378, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1597521521890808, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1705211280706884, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1765684605781944, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1787828593283044, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1954101727360016, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956963007823992, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1973775909470836, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4303844821561524, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
       propertyPath: m_RootOrder
