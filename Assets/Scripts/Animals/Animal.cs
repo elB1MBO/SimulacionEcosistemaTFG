@@ -18,13 +18,13 @@ public class Animal : MonoBehaviour
 
     private Plant plantTarget;
 
-    float waitTime = 1;
+    const float waitTime = 1;
 
     float minDist;
-    [SerializeField] float speed = 2.5f;
+    [SerializeField] float speed;
 
-    [SerializeField] float energyWasteValue = 0.01f;
-    [SerializeField] float energyRestoreValue = 0.02f;
+    [SerializeField] float energyWasteValue;
+    [SerializeField] float energyRestoreValue;
 
     public NavMeshAgent navMeshAgent;
 
@@ -34,7 +34,7 @@ public class Animal : MonoBehaviour
     public void SetAnimalContainer(GameObject animalContainer) { this.animalContainer = animalContainer; }
 
     //Properties
-    private float maxPropValue = 100;
+    private const float maxPropValue = 100;
 
     [SerializeField] private float currentHunger;
     private float currentThirst;
@@ -49,11 +49,13 @@ public class Animal : MonoBehaviour
     public float GetReproduceUrge() { return currentReproduceUrge; }
     public Actions GetCurrentAction() { return currentAction; }
 
-    Animator henAnimation;
+    Animator animator;
 
     [SerializeField] Vector3 randomPoint;
     [SerializeField] bool randomPointSetted = false;
     [SerializeField] Vector3 destino;
+
+    private ParticleSystem reproduceParticleSystem;
 
     // Start is called before the first frame update
     void Start()
@@ -61,7 +63,7 @@ public class Animal : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = this.speed;
 
-        henAnimation = this.GetComponentInChildren<Animator>();
+        animator = this.GetComponentInChildren<Animator>();
 
         currentHunger = Random.Range(1, 20);
         currentThirst = Random.Range(1, 20);
@@ -70,6 +72,8 @@ public class Animal : MonoBehaviour
         hungryBar.UpdateValueBar(maxPropValue, currentHunger);
         thirstyBar.UpdateValueBar(maxPropValue, currentThirst);
         reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
+
+        this.reproduceParticleSystem = GetComponent<ParticleSystem>();
 
         StartCoroutine(Awaiter(waitTime));
     }
@@ -137,7 +141,10 @@ public class Animal : MonoBehaviour
 
         switch (currentAction)
         {
-            case Actions.SEARCHING_FOOD: targetTag = "Food"; break;
+            case Actions.SEARCHING_FOOD:
+                if (this.gameObject.tag == "Fox") { targetTag = "Hen"; }
+                else targetTag = "Food";
+                break;
             case Actions.SEARCHING_WATER: targetTag = "Water"; break;
             case Actions.SEARCHING_MATE: targetTag = this.gameObject.tag; break;
             default: break;
@@ -172,7 +179,7 @@ public class Animal : MonoBehaviour
                 Vector3 targetClosestPoint = nearestTarget.GetComponent<Collider>().ClosestPoint(this.transform.position);
                 navMeshAgent.SetDestination(targetClosestPoint);
             }
-            else if (nearestTarget.tag == "Food" || nearestTarget.tag == this.gameObject.tag) //Si es un bush, no importa, ya que se detiene al colisionar
+            else if (nearestTarget.tag == "Food" || nearestTarget.tag == "Hen" || nearestTarget.tag == this.gameObject.tag) //Si es un bush, no importa, ya que se detiene al colisionar
             {
                 Vector3 targetPosition = nearestTarget.transform.position;
                 navMeshAgent.SetDestination(targetPosition);
@@ -269,6 +276,12 @@ public class Animal : MonoBehaviour
 
     void Reproduce()
     {
+
+        if(!this.reproduceParticleSystem.isPlaying)
+        {
+            Debug.Log("Entra");
+            this.reproduceParticleSystem.Play();
+        }
         if (currentReproduceUrge > 1)
         {
             currentReproduceUrge -= energyRestoreValue*10;
@@ -279,8 +292,7 @@ public class Animal : MonoBehaviour
             //Add genetic factor
 
             GameObject newAnimal = Instantiate(this.gameObject, gameObject.transform.position, Quaternion.identity, animalContainer.transform);
-            //float scale = this.gameObject.transform.localScale.x;
-            //newAnimal.transform.localScale = new Vector3(scale * 1.2f, scale * 1.2f, scale * 1.2f);
+            this.reproduceParticleSystem.Stop();
         }
     }
 
@@ -322,11 +334,22 @@ public class Animal : MonoBehaviour
         {
             currentAction = Actions.DRINKING;
         }
-        if (other.gameObject.tag == "Food" && currentAction == Actions.SEARCHING_FOOD)
+        if(this.gameObject.tag == "Fox")
         {
-            //Como por ahora el unico tipo de comida es Plant, si el tag es food sabemos que es una planta, por lo que obtenemos el componente del padre del gameObject
-            this.plantTarget = other.GetComponentInParent<Plant>(); //Guardamos la planta objetivo
-            currentAction = Actions.EATING; //Actualizamos la accion
+            if (other.gameObject.tag == "Hen" && currentAction == Actions.SEARCHING_FOOD)
+            {
+                Destroy(other.gameObject);
+                this.currentHunger = 0;
+            }
+        }
+        else
+        {
+            if (other.gameObject.tag == "Food" && currentAction == Actions.SEARCHING_FOOD)
+            {
+                //Como por ahora el unico tipo de comida es Plant, si el tag es food sabemos que es una planta, por lo que obtenemos el componente del padre del gameObject
+                this.plantTarget = other.GetComponentInParent<Plant>(); //Guardamos la planta objetivo
+                currentAction = Actions.EATING; //Actualizamos la accion
+            }
         }
         if (other.gameObject.tag == this.gameObject.tag && currentAction == Actions.SEARCHING_MATE) // && other.GetComponent<Animal>().GetCurrentAction() == Actions.SEARCHING_MATE
         {
@@ -351,28 +374,25 @@ public class Animal : MonoBehaviour
 
     void SetAnimation()
     {
-        if (currentAction == Actions.SEARCHING_WATER || currentAction == Actions.SEARCHING_FOOD || currentAction == Actions.SEARCHING_MATE || currentAction == Actions.EXPLORING)
+        if (currentAction == Actions.SEARCHING_WATER || currentAction == Actions.SEARCHING_FOOD || currentAction == Actions.SEARCHING_MATE)
         {
             //Hay que declarar la "actual" a false antes de indicarle la nueva
-            henAnimation.SetBool("Eat", false);
-            henAnimation.SetBool("Walk", true);
-            henAnimation.SetBool("Turn Head", false);
+            animator.SetBool("Eat", false);
+            animator.SetBool("Walk", true);
         }
         if (currentAction == Actions.EATING || currentAction == Actions.DRINKING)
         {
-            henAnimation.SetBool("Walk", false);
-            henAnimation.SetBool("Eat", true);
-            henAnimation.SetBool("Turn Head", false);
+            animator.SetBool("Walk", false);
+            animator.SetBool("Eat", true);
         }
-        if(currentAction == Actions.MATING || currentAction == Actions.EXPLORING)
+        if(currentAction == Actions.MATING)
         {
-            henAnimation.SetBool("Walk", false);
-            henAnimation.SetBool("Eat", false);
-            henAnimation.SetBool("Turn Head", true);
+            animator.SetBool("Walk", false);
+            animator.SetBool("Eat", false);
         }
         if (currentAction == Actions.IDLE)
         {
-            henAnimation.SetBool("Idle", true);
+            animator.SetBool("Idle", true);
         }
     }
 }
