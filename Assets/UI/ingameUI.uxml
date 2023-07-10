@@ -3,5 +3,7 @@
     <ui:GroupBox name="PopulationBox">
         <ui:Label text="Hen Population: " display-tooltip-when-elided="true" name="HenPopulationTitle" style="width: 62px; height: 18px; font-size: 18px; white-space: nowrap;" />
         <ui:Label text="0" display-tooltip-when-elided="true" name="HenPopulationNumber" style="width: 93px; white-space: normal; position: absolute; top: 6px; left: 143px; font-size: 18px;" />
+        <ui:Label text="Fox Population: " display-tooltip-when-elided="true" name="FoxPopulationTitle" style="width: 62px; height: 18px; font-size: 18px; white-space: nowrap;" />
+        <ui:Label text="0" display-tooltip-when-elided="true" name="FoxPopulationNumber" style="width: 93px; white-space: normal; position: absolute; top: 30px; left: 143px; font-size: 18px;" />
     </ui:GroupBox>
 </ui:UXML>

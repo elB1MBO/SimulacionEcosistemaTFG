@@ -8,14 +8,25 @@ public class Simulation : MonoBehaviour
     [SerializeField] public float startHenNumber;
     [SerializeField] public GameObject Hen;
     [SerializeField] public GameObject HenContainer;
+
+    [SerializeField] public float startFoxNumber;
+    [SerializeField] public GameObject Fox;
+    [SerializeField] public GameObject FoxContainer;
     // Start is called before the first frame update
     void Start()
     {
-        //Spawn 10 hens at random positions
+        //Spawn x hens at random positions
         for (int i = 0; i < startHenNumber; i++)
         {
             GameObject newHen = Instantiate(Hen, new Vector3(Random.Range(30f, 50f), 1, Random.Range(30f, 50f)), Quaternion.Euler(0, 0, 0), HenContainer.transform);
             newHen.GetComponent<Animal>().SetAnimalContainer(HenContainer);
+        }
+
+        //Spawn x foxes at random positions
+        for (int i = 0; i < startFoxNumber; i++)
+        {
+            GameObject newFox = Instantiate(Fox, new Vector3(Random.Range(30f, 50f), 1, Random.Range(30f, 50f)), Quaternion.Euler(0, 0, 0), FoxContainer.transform);
+            newFox.GetComponent<Animal>().SetAnimalContainer(FoxContainer);
         }
     }
 

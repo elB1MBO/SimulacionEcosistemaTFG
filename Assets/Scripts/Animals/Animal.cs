@@ -292,7 +292,7 @@ public class Animal : MonoBehaviour
             //Add genetic factor
 
             GameObject newAnimal = Instantiate(this.gameObject, gameObject.transform.position, Quaternion.identity, animalContainer.transform);
-            this.reproduceParticleSystem.Stop();
+            //this.reproduceParticleSystem.Stop();
         }
     }
 
