@@ -107,7 +107,7 @@ MonoBehaviour:
   allTargets: []
   irtargets: []
   nearestTarget: {fileID: 0}
-  speed: 3
+  speed: 2
   energyWasteValue: 0.01
   energyRestoreValue: 0.04
   navMeshAgent: {fileID: 0}
@@ -115,8 +115,8 @@ MonoBehaviour:
   animalContainer: {fileID: 0}
   currentHunger: 0
   hungryBar: {fileID: 7770872782416020490}
-  thirstyBar: {fileID: 7770872782165222930}
-  reproduceUrgeBar: {fileID: 7770872782644393764}
+  thirstyBar: {fileID: 7770872782644393764}
+  reproduceUrgeBar: {fileID: 7770872782165222930}
   randomPoint: {x: 0, y: 0, z: 0}
   randomPointSetted: 0
   destino: {x: 0, y: 0, z: 0}

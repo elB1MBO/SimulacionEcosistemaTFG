@@ -17,6 +17,7 @@ public class Animal : MonoBehaviour
     public GameObject nearestTarget;
 
     private Plant plantTarget;
+    private Animal mate;
 
     const float waitTime = 1;
 
@@ -62,6 +63,8 @@ public class Animal : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = this.speed;
+
+        this.energyWasteValue *= (this.speed / 2f);
 
         animator = this.GetComponentInChildren<Animator>();
 
@@ -279,7 +282,6 @@ public class Animal : MonoBehaviour
 
         if(!this.reproduceParticleSystem.isPlaying)
         {
-            Debug.Log("Entra");
             this.reproduceParticleSystem.Play();
         }
         if (currentReproduceUrge > 1)
@@ -292,6 +294,7 @@ public class Animal : MonoBehaviour
             //Add genetic factor
 
             GameObject newAnimal = Instantiate(this.gameObject, gameObject.transform.position, Quaternion.identity, animalContainer.transform);
+            newAnimal.GetComponentInChildren<Animal>().speed = (this.speed + this.mate.speed + Random.Range(-0.5f, 0.5f)) / 2f;
             //this.reproduceParticleSystem.Stop();
         }
     }
@@ -353,6 +356,7 @@ public class Animal : MonoBehaviour
         }
         if (other.gameObject.tag == this.gameObject.tag && currentAction == Actions.SEARCHING_MATE) // && other.GetComponent<Animal>().GetCurrentAction() == Actions.SEARCHING_MATE
         {
+            this.mate = other.gameObject.GetComponentInChildren<Animal>();
             currentAction = Actions.MATING;
         }
         if (other.gameObject.tag == "RandomPoint")
