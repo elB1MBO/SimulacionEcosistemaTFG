@@ -120,6 +120,7 @@ MonoBehaviour:
   randomPoint: {x: 0, y: 0, z: 0}
   randomPointSetted: 0
   destino: {x: 0, y: 0, z: 0}
+  model: {fileID: 2392210309248763591}
 --- !u!54 &8145248011295276413
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5218,6 +5219,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+--- !u!1 &2392210309248763591 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1055748561691468, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+  m_PrefabInstance: {fileID: 2391717790390232459}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2395454282346321215 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4303844821561524, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}

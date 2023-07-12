@@ -991,6 +991,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad556093e171a1b4db9c6707194921c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  simulator: {fileID: 1951365569}
 --- !u!1001 &678493278
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3479,6 +3480,7 @@ MonoBehaviour:
   startFoxNumber: 0
   Fox: {fileID: 884213398697553992, guid: 2477a55979d3ece41a539623824dc9ae, type: 3}
   FoxContainer: {fileID: 1981720171}
+  averageHenSpeed: 0
 --- !u!114 &1951365572
 MonoBehaviour:
   m_ObjectHideFlags: 0

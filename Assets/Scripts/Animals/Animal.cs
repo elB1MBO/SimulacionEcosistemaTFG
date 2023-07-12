@@ -23,6 +23,7 @@ public class Animal : MonoBehaviour
 
     float minDist;
     [SerializeField] float speed;
+    public float GetSpeed() { return speed; }
 
     [SerializeField] float energyWasteValue;
     [SerializeField] float energyRestoreValue;
@@ -57,6 +58,8 @@ public class Animal : MonoBehaviour
     [SerializeField] Vector3 destino;
 
     private ParticleSystem reproduceParticleSystem;
+
+    [SerializeField] public GameObject model;
 
     // Start is called before the first frame update
     void Start()
@@ -294,9 +297,47 @@ public class Animal : MonoBehaviour
             //Add genetic factor
 
             GameObject newAnimal = Instantiate(this.gameObject, gameObject.transform.position, Quaternion.identity, animalContainer.transform);
-            newAnimal.GetComponentInChildren<Animal>().speed = (this.speed + this.mate.speed + Random.Range(-0.5f, 0.5f)) / 2f;
+
+            float newSpeed = (this.speed + this.mate.speed + Random.Range(-0.5f, 0.5f)) / 2f;
+
+            newAnimal.GetComponentInChildren<Animal>().speed = newSpeed;
+
+            SetColor(newAnimal, newSpeed);
+            
             //this.reproduceParticleSystem.Stop();
         }
+    }
+
+    void SetColor(GameObject animal, float speed)
+    {
+        Renderer renderer = animal.GetComponent<Animal>().GetModel().GetComponent<Renderer>();
+        Color newColor = new Color(1, 1, 1);
+
+        float dif = speed - 2f;
+
+        if (dif > 0f)
+        {
+            //Si es mayor, significa que es mas rapido, luego hay que bajar los valores de green y blue para que sea mas rojo
+            newColor.g -= dif;
+            newColor.b -= dif;
+        }
+        else
+        {
+            //Si es menor, entonces hay que bajar el valor de red para que sea mas azul
+            newColor.r += dif;
+        }
+
+        animal.GetComponent<Animal>().SetModelColor(newColor);
+    }
+
+    public GameObject GetModel()
+    {
+        return this.model;
+    }
+
+    void SetModelColor(Color color)
+    {
+        this.model.GetComponent<Renderer>().material.color = color;
     }
 
     void Explore()

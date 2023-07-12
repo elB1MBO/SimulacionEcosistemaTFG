@@ -12,6 +12,8 @@ public class Simulation : MonoBehaviour
     [SerializeField] public float startFoxNumber;
     [SerializeField] public GameObject Fox;
     [SerializeField] public GameObject FoxContainer;
+
+    public float averageHenSpeed;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +35,11 @@ public class Simulation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+
+        CalculateAverageSpeed();
+
+
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Time.timeScale *= 2;
         }
@@ -43,5 +49,17 @@ public class Simulation : MonoBehaviour
         }
     }
 
+    void CalculateAverageSpeed()
+    {
+        float hensNum = HenContainer.transform.childCount;
+        float totalSpeeds = 0f;
+
+        foreach (Transform hen in HenContainer.transform)
+        {
+            totalSpeeds += hen.GetComponent<Animal>().GetSpeed();
+        }
+
+        averageHenSpeed = totalSpeeds / hensNum;
+    }
     
 }
