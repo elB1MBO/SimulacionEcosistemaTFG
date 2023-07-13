@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -30,15 +31,14 @@ public class Simulation : MonoBehaviour
             GameObject newFox = Instantiate(Fox, new Vector3(Random.Range(30f, 50f), 1, Random.Range(30f, 50f)), Quaternion.Euler(0, 0, 0), FoxContainer.transform);
             newFox.GetComponent<Animal>().SetAnimalContainer(FoxContainer);
         }
+
+        InvokeRepeating("CalculateAverageSpeed", 0f, 1f);
+        InvokeRepeating("SaveData", 0f, 1f);
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        CalculateAverageSpeed();
-
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Time.timeScale *= 2;
@@ -60,6 +60,19 @@ public class Simulation : MonoBehaviour
         }
 
         averageHenSpeed = totalSpeeds / hensNum;
+    }
+
+    void SaveData()
+    {
+        using (StreamWriter writerH = new StreamWriter("Assets/Data/hens.txt", true))
+        {
+            writerH.WriteLine(GameObject.FindGameObjectsWithTag("Hen").Length.ToString());
+        }
+
+        using (StreamWriter writerF = new StreamWriter("Assets/Data/foxes.txt", true))
+        {
+            writerF.WriteLine(GameObject.FindGameObjectsWithTag("Fox").Length.ToString());
+        }
     }
     
 }

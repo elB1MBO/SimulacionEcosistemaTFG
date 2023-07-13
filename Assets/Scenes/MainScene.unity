@@ -3440,6 +3440,7 @@ GameObject:
   - component: {fileID: 1951365570}
   - component: {fileID: 1951365571}
   - component: {fileID: 1951365572}
+  - component: {fileID: 1951365573}
   m_Layer: 0
   m_Name: Simulator
   m_TagString: Untagged
@@ -3495,6 +3496,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hen: {fileID: 2391717790309714696, guid: 8c0afc0e1dd3da84c8aa2a09390a3f7d, type: 3}
   fox: {fileID: 884213398697553992, guid: 2477a55979d3ece41a539623824dc9ae, type: 3}
+--- !u!114 &1951365573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1951365569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978b94866ee50764e8f0e6a95ac6189f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fileName: data.txt
 --- !u!1001 &1969312589
 PrefabInstance:
   m_ObjectHideFlags: 0

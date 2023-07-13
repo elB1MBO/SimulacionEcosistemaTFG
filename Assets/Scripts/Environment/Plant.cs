@@ -39,7 +39,6 @@ public class Plant : MonoBehaviour
         {
             this.gameObject.transform.GetChild(0).tag = "Growing";
             edible = false; //cuando llega a 0, la marca como no comestible
-            Debug.Log("Ahora crece");
             Restore();
         }
         else if(foodAmount < 100 && edible)
