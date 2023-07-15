@@ -87,6 +87,7 @@ public class Animal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         GetAllTargets();
 
         SetTarget();
@@ -97,7 +98,30 @@ public class Animal : MonoBehaviour
 
         SetAnimation();
 
+        if (this.gameObject.tag == "Hen")
+        {
+            CheckPredators();
+        }
+
         destino = this.navMeshAgent.destination;
+    }
+
+    void CheckPredators()
+    {
+        List<GameObject> predators = new List<GameObject>();
+        predators = GameObject.FindGameObjectsWithTag("Fox").ToList();
+        foreach (GameObject predator in predators)
+        {
+            float distance = Vector3.Distance(transform.position, predator.transform.position);
+            Debug.Log("Distance: "+distance);
+
+            if(distance < this.senseRange)
+            {
+                Vector3 dirToPredator = transform.position - predator.transform.position;
+                Vector3 newPos = transform.position + dirToPredator;
+                this.navMeshAgent.SetDestination(newPos);
+            }
+        }
     }
 
     void UpdateValues()
@@ -191,7 +215,6 @@ public class Animal : MonoBehaviour
                 navMeshAgent.SetDestination(targetPosition);
             }
         }
-        
     }
     List<GameObject> GetInRangeTargets()
     {

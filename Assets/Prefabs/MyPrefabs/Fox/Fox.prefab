@@ -70,6 +70,7 @@ MonoBehaviour:
   randomPoint: {x: 0, y: 0, z: 0}
   randomPointSetted: 0
   destino: {x: 0, y: 0, z: 0}
+  model: {fileID: 1664803850487887834}
 --- !u!195 &7625240314554251840
 NavMeshAgent:
   m_ObjectHideFlags: 0
