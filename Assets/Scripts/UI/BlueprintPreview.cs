@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BlueprintPreview : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class BlueprintPreview : MonoBehaviour
 
         simulatorManager = GameObject.FindGameObjectWithTag("SimulatorManager");
 
-        switch (prefab.gameObject.tag)
+        switch (prefab.tag)
         {
             case "Hen":
                 this.container = this.simulatorManager.GetComponent<Simulation>().HenContainer;
@@ -38,7 +39,7 @@ public class BlueprintPreview : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        switch (prefab.gameObject.tag)
+        switch (prefab.tag)
         {
             case "Hen":
                 this.container = this.simulatorManager.GetComponent<Simulation>().HenContainer;
@@ -47,6 +48,9 @@ public class BlueprintPreview : MonoBehaviour
                 this.container = this.simulatorManager.GetComponent<Simulation>().FoxContainer;
                 break;
         }
+
+        //Para evitar que se generen si se clicka sobre un boton o algo que no sea el terreno
+        if (EventSystem.current.IsPointerOverGameObject()) { return; }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         
@@ -61,10 +65,8 @@ public class BlueprintPreview : MonoBehaviour
             {
                 GameObject newAnimal = Instantiate(prefab, transform.position, transform.rotation, this.container.transform);
                 newAnimal.GetComponent<Animal>().SetAnimalContainer(container);
-                Destroy(gameObject);
             }
-            else { Debug.LogWarning("No puedes colocarlo sobre un árbol"); }
-            //Instantiate(prefab, transform.position, transform.rotation);
+            else { Debug.LogWarning("No puedes colocarlo tan alto"); }
         }
     }
 }

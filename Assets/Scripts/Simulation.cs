@@ -47,6 +47,17 @@ public class Simulation : MonoBehaviour
         {
             Time.timeScale *= 0.5f;
         }
+        else if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (Time.timeScale == 1f)
+            {
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                Time.timeScale = 1f;
+            }
+        }
     }
 
     void CalculateAverageSpeed()

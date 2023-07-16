@@ -108,14 +108,12 @@ public class Animal : MonoBehaviour
 
     void CheckPredators()
     {
-        List<GameObject> predators = new List<GameObject>();
-        predators = GameObject.FindGameObjectsWithTag("Fox").ToList();
+        List<GameObject> predators = GameObject.FindGameObjectsWithTag("Fox").ToList();
         foreach (GameObject predator in predators)
         {
             float distance = Vector3.Distance(transform.position, predator.transform.position);
-            Debug.Log("Distance: "+distance);
 
-            if(distance < this.senseRange)
+            if(distance < this.senseRange*0.75f)
             {
                 Vector3 dirToPredator = transform.position - predator.transform.position;
                 Vector3 newPos = transform.position + dirToPredator;
@@ -131,10 +129,10 @@ public class Animal : MonoBehaviour
             case Actions.EATING: Eat(this.plantTarget); break;
             case Actions.DRINKING: Drink(); break;
             case Actions.MATING: Reproduce(); break;
-            default: { 
-                    currentHunger += energyWasteValue; 
-                    currentThirst += energyWasteValue; 
-                    if (currentReproduceUrge < maxPropValue) { currentReproduceUrge += energyWasteValue; } 
+            default: {
+                    currentHunger += energyWasteValue * Time.timeScale; 
+                    currentThirst += energyWasteValue * Time.timeScale; 
+                    if (currentReproduceUrge < maxPropValue) { currentReproduceUrge += energyWasteValue * Time.timeScale; } 
                 } break;
         }
 
@@ -281,7 +279,7 @@ public class Animal : MonoBehaviour
         if (plant.IsEdible() && this.currentHunger > 1)
         {
             plant.Consume(energyRestoreValue);
-            this.currentHunger -= energyRestoreValue;
+            this.currentHunger -= energyRestoreValue * Time.timeScale;
         }
         else
         {
@@ -295,7 +293,7 @@ public class Animal : MonoBehaviour
     {
         if (currentThirst > 1)
         {
-            currentThirst -= energyRestoreValue;
+            currentThirst -= energyRestoreValue * Time.timeScale;
         }
         else
         {
@@ -312,7 +310,7 @@ public class Animal : MonoBehaviour
         }
         if (currentReproduceUrge > 1)
         {
-            currentReproduceUrge -= energyRestoreValue*10;
+            currentReproduceUrge -= (energyRestoreValue * 10) * Time.timeScale;
         }
         else
         {
@@ -406,7 +404,7 @@ public class Animal : MonoBehaviour
             if (other.gameObject.tag == "Hen" && currentAction == Actions.SEARCHING_FOOD)
             {
                 Destroy(other.gameObject);
-                this.currentHunger = 0;
+                this.currentHunger = 0; //el zorro satisface su hambre si se come una gallina
             }
         }
         else
