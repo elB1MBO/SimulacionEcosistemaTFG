@@ -41,7 +41,7 @@ public class Simulation : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Time.timeScale *= 2;
+            Time.timeScale *= 2f;
         }
         else if (Input.GetKeyDown(KeyCode.L))
         {
@@ -49,13 +49,13 @@ public class Simulation : MonoBehaviour
         }
         else if(Input.GetKeyDown(KeyCode.Escape))
         {
-            if (Time.timeScale == 1f)
+            if (Time.timeScale == 0)
             {
-                Time.timeScale = 0f;
+                Time.timeScale = 1;
             }
             else
             {
-                Time.timeScale = 1f;
+                Time.timeScale = 0;
             }
         }
     }

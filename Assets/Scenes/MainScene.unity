@@ -3948,6 +3948,7 @@ MonoBehaviour:
   startFoxNumber: 0
   Fox: {fileID: 884213398697553992, guid: 2477a55979d3ece41a539623824dc9ae, type: 3}
   FoxContainer: {fileID: 1981720171}
+  globalVars: {fileID: 0}
   averageHenSpeed: 0
 --- !u!114 &1951365573
 MonoBehaviour:

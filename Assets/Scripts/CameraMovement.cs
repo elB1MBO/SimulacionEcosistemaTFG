@@ -30,10 +30,27 @@ public class CameraMovement : MonoBehaviour
 
     void SetCameraMovement()
     {
-        float hsp = speed * Input.GetAxis("Horizontal");
-        float vsp = speed * Input.GetAxis("Vertical");
+        float hsp = 0f;
+        if (Input.GetKey(KeyCode.A)) // Tecla para mover a la izquierda
+        {
+            hsp = -speed;
+        }
+        if (Input.GetKey(KeyCode.D)) // Tecla para mover a la derecha
+        {
+            hsp = speed;
+        }
+        //float hsp = speed * Input.GetAxis("Horizontal");
+        float vsp = 0f;
+        if (Input.GetKey(KeyCode.S)) // Tecla para mover a la izquierda
+        {
+            vsp = -speed;
+        }
+        if (Input.GetKey(KeyCode.W)) // Tecla para mover a la derecha
+        {
+            vsp = speed;
+        }
+        //float vsp = speed * Input.GetAxis("Vertical");
         float scrollSp = Mathf.Log(transform.position.y) * -zoomSpeed * Input.GetAxis("Mouse ScrollWheel");
-
         if (transform.position.y >= maxHeight && scrollSp > 0)
         {
             scrollSp = 0;
@@ -67,12 +84,12 @@ public class CameraMovement : MonoBehaviour
 
     void SetCameraRotation()
     {
-        if (Input.GetMouseButtonDown(2)) // comprueba si esta pulsado el boton central
+        if (Input.GetMouseButtonDown(1)) // comprueba si esta pulsado el boton central
         {
             p1 = Input.mousePosition; 
         }
 
-        if (Input.GetMouseButton(2))
+        if (Input.GetMouseButton(1))
         {
             p2 = Input.mousePosition;
 

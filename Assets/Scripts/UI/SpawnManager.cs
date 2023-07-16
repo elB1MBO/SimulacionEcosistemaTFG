@@ -5,19 +5,9 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
 
-    public GameObject hen;
-    public GameObject fox;
-
-    private GameObject HenContainer;
-    private GameObject FoxContainer;
-
-    private int animal = -1; // 0 = hen, 1 = fox
-
     // Start is called before the first frame update
     void Start()
     {
-        this.HenContainer = this.gameObject.GetComponent<Simulation>().HenContainer;
-        this.FoxContainer = this.gameObject.GetComponent<Simulation>().FoxContainer;
     }
 
     // Update is called once per frame
