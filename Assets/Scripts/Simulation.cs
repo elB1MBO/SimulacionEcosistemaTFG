@@ -15,6 +15,7 @@ public class Simulation : MonoBehaviour
     [SerializeField] public GameObject FoxContainer;
 
     public float averageHenSpeed;
+    public float averageFoxSpeed;
     // Start is called before the first frame update
     void Start()
     {
@@ -71,6 +72,16 @@ public class Simulation : MonoBehaviour
         }
 
         averageHenSpeed = totalSpeeds / hensNum;
+
+        float foxesNum = FoxContainer.transform.childCount;
+        totalSpeeds = 0f;
+        foreach (Transform fox in FoxContainer.transform)
+        {
+            totalSpeeds += fox.GetComponent<Animal>().GetSpeed();
+        }
+
+        averageFoxSpeed = totalSpeeds / foxesNum;
+
     }
 
     void SaveData()
