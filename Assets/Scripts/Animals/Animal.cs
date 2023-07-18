@@ -404,7 +404,7 @@ public class Animal : MonoBehaviour
             if (other.gameObject.tag == "Hen" && currentAction == Actions.SEARCHING_FOOD)
             {
                 Destroy(other.gameObject);
-                this.currentHunger = 0; //el zorro satisface su hambre si se come una gallina
+                this.currentHunger = 3; //el zorro satisface su hambre si se come una gallina
             }
         }
         else

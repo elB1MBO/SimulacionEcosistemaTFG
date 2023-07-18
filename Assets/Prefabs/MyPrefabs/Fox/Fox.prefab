@@ -58,8 +58,8 @@ MonoBehaviour:
   irtargets: []
   nearestTarget: {fileID: 0}
   speed: 4
-  energyWasteValue: 0.02
-  energyRestoreValue: 0.06
+  energyWasteValue: 0.01
+  energyRestoreValue: 0.04
   navMeshAgent: {fileID: 0}
   currentAction: 0
   animalContainer: {fileID: 0}

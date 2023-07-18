@@ -9,7 +9,6 @@ public class BlueprintPreview : MonoBehaviour
     private GameObject simulatorManager;
 
     RaycastHit hit;
-    Vector3 movePoint;
     public GameObject prefab;
 
     // Start is called before the first frame update
