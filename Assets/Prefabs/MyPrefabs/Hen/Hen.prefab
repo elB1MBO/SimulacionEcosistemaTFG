@@ -105,21 +105,17 @@ MonoBehaviour:
   senseRange: 10
   targetTag: Food
   allTargets: []
-  irtargets: []
   nearestTarget: {fileID: 0}
   speed: 2
-  energyWasteValue: 0.01
-  energyRestoreValue: 0.04
-  navMeshAgent: {fileID: 0}
-  currentAction: 0
+  energyWasteValue: 0.05
+  energyRestoreValue: 0.12
+  navMeshAgent: {fileID: 2391717790309714698}
   animalContainer: {fileID: 0}
-  currentHunger: 0
   hungryBar: {fileID: 7770872782416020490}
   thirstyBar: {fileID: 7770872782644393764}
   reproduceUrgeBar: {fileID: 7770872782165222930}
-  randomPoint: {x: 0, y: 0, z: 0}
-  randomPointSetted: 0
-  destino: {x: 0, y: 0, z: 0}
+  animator: {fileID: 2334497659658693389}
+  reproduceParticleSystem: {fileID: 3028516302818309072}
   model: {fileID: 2392210309248763591}
 --- !u!54 &8145248011295276413
 Rigidbody:
@@ -4960,6 +4956,14 @@ PrefabInstance:
       value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -4977,15 +4981,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -4993,7 +4997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.633
+      value: 0.841
       objectReference: {fileID: 0}
     - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5010,6 +5014,14 @@ PrefabInstance:
     - target: {fileID: 8197198330646447378, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_Name
       value: Animal Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8197198330646447390, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 717999867798151485, guid: 27c6445baccddb4479364245db06e33c, type: 3}
+    - target: {fileID: 8197198330646447390, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
@@ -5062,6 +5074,23 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
   m_PrefabInstance: {fileID: 1879659024917175785}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7770872783320439035 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8197198330646447378, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+  m_PrefabInstance: {fileID: 1879659024917175785}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6008468502929741002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7770872783320439035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 564560689ffdf9045bfc556f1a4fe531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2391717790390232459
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5219,6 +5248,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+--- !u!95 &2334497659658693389 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 95943282229431942, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}
+  m_PrefabInstance: {fileID: 2391717790390232459}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2392210309248763591 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1055748561691468, guid: 312b31977ed9b2d48a14849ebb8c7fb3, type: 3}

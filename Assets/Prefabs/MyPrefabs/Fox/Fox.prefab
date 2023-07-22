@@ -55,21 +55,17 @@ MonoBehaviour:
   senseRange: 12.5
   targetTag: Food
   allTargets: []
-  irtargets: []
   nearestTarget: {fileID: 0}
-  speed: 4
-  energyWasteValue: 0.01
-  energyRestoreValue: 0.04
-  navMeshAgent: {fileID: 0}
-  currentAction: 0
+  speed: 3
+  energyWasteValue: 0.05
+  energyRestoreValue: 0.12
+  navMeshAgent: {fileID: 7625240314554251840}
   animalContainer: {fileID: 0}
-  currentHunger: 0
   hungryBar: {fileID: 879935255030050957}
   thirstyBar: {fileID: 879935255333897123}
   reproduceUrgeBar: {fileID: 879935255819424405}
-  randomPoint: {x: 0, y: 0, z: 0}
-  randomPointSetted: 0
-  destino: {x: 0, y: 0, z: 0}
+  animator: {fileID: 457701081591594383}
+  reproduceParticleSystem: {fileID: 9127872387089592668}
   model: {fileID: 1664803850487887834}
 --- !u!195 &7625240314554251840
 NavMeshAgent:
@@ -5067,6 +5063,14 @@ PrefabInstance:
       value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -5100,7 +5104,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.175
+      value: 1.262
       objectReference: {fileID: 0}
     - target: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5118,8 +5122,33 @@ PrefabInstance:
       propertyPath: m_Name
       value: Animal Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 8197198330646447390, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 717999867798151485, guid: 27c6445baccddb4479364245db06e33c, type: 3}
+    - target: {fileID: 8197198330646447391, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+      propertyPath: m_DynamicPixelsPerUnit
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+--- !u!1 &879935253854088316 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8197198330646447378, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}
+  m_PrefabInstance: {fileID: 9075989104462375278}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6676261536411953427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879935253854088316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 564560689ffdf9045bfc556f1a4fe531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &879935253854088319 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8197198330646447377, guid: c4f07ebb8994d8e41b02612d14077ca5, type: 3}

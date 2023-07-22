@@ -13,7 +13,7 @@ public class Animal : MonoBehaviour
     public float senseRange;
     public string targetTag;
     public List<GameObject> allTargets;
-    [SerializeField] private List<GameObject> irtargets;
+    private List<GameObject> irtargets;
     public GameObject nearestTarget;
 
     private Plant plantTarget;
@@ -30,7 +30,7 @@ public class Animal : MonoBehaviour
 
     public NavMeshAgent navMeshAgent;
 
-    [SerializeField] private Actions currentAction = Actions.IDLE;
+    private Actions currentAction = Actions.IDLE;
 
     [SerializeField] private GameObject animalContainer;
     public void SetAnimalContainer(GameObject animalContainer) { this.animalContainer = animalContainer; }
@@ -38,7 +38,7 @@ public class Animal : MonoBehaviour
     //Properties
     private const float maxPropValue = 100;
 
-    [SerializeField] private float currentHunger;
+    private float currentHunger;
     private float currentThirst;
     private float currentReproduceUrge;
 
@@ -51,25 +51,24 @@ public class Animal : MonoBehaviour
     public float GetReproduceUrge() { return currentReproduceUrge; }
     public Actions GetCurrentAction() { return currentAction; }
 
-    Animator animator;
+    [SerializeField] Animator animator;
 
-    [SerializeField] Vector3 randomPoint;
-    [SerializeField] bool randomPointSetted = false;
-    [SerializeField] Vector3 destino;
+    Vector3 randomPoint;
+    bool randomPointSetted = false;
+    Vector3 destino;
 
-    private ParticleSystem reproduceParticleSystem;
+    [SerializeField] private ParticleSystem reproduceParticleSystem;
 
     [SerializeField] public GameObject model;
 
     // Start is called before the first frame update
     void Start()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = this.speed;
 
         this.energyWasteValue *= (this.speed / 2f);
 
-        animator = this.GetComponentInChildren<Animator>();
+        //animator = this.GetComponentInChildren<Animator>();
 
         currentHunger = Random.Range(1, 20);
         currentThirst = Random.Range(1, 20);
@@ -79,13 +78,13 @@ public class Animal : MonoBehaviour
         thirstyBar.UpdateValueBar(maxPropValue, currentThirst);
         reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
 
-        this.reproduceParticleSystem = GetComponent<ParticleSystem>();
+        //this.reproduceParticleSystem = GetComponent<ParticleSystem>();
 
         StartCoroutine(Awaiter(waitTime));
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
 
         GetAllTargets();
@@ -108,6 +107,7 @@ public class Animal : MonoBehaviour
 
     void CheckPredators()
     {
+        if (this.navMeshAgent == null) { return; }
         List<GameObject> predators = GameObject.FindGameObjectsWithTag("Fox").ToList();
         foreach (GameObject predator in predators)
         {
@@ -315,7 +315,6 @@ public class Animal : MonoBehaviour
         else
         {
             currentAction = Actions.IDLE;
-            //Add genetic factor
 
             GameObject newAnimal = Instantiate(this.gameObject, gameObject.transform.position, Quaternion.identity, animalContainer.transform);
 
@@ -331,10 +330,20 @@ public class Animal : MonoBehaviour
 
     void SetColor(GameObject animal, float speed)
     {
-        Renderer renderer = animal.GetComponent<Animal>().GetModel().GetComponent<Renderer>();
-        Color newColor = new Color(1, 1, 1);
+        Color newColor;
+        float dif;
+        if (this.tag == "Fox")
+        {
+            dif = speed - 3f;
 
-        float dif = speed - 2f;
+            Renderer renderer = animal.GetComponent<Animal>().GetModel().GetComponent<Renderer>();
+            newColor = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b);
+        }
+        else
+        {
+            dif = speed - 2f;
+            newColor = new Color(1, 1, 1);
+        }
 
         if (dif > 0f)
         {
@@ -440,6 +449,7 @@ public class Animal : MonoBehaviour
 
     void SetAnimation()
     {
+        if(this.tag == "Fox") { return; }
         if (currentAction == Actions.SEARCHING_WATER || currentAction == Actions.SEARCHING_FOOD || currentAction == Actions.SEARCHING_MATE)
         {
             //Hay que declarar la "actual" a false antes de indicarle la nueva

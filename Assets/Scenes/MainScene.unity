@@ -7139,7 +7139,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1951365570}
   - component: {fileID: 1951365571}
-  - component: {fileID: 1951365573}
   m_Layer: 0
   m_Name: Simulator
   m_TagString: SimulatorManager
@@ -7182,19 +7181,6 @@ MonoBehaviour:
   FoxContainer: {fileID: 1981720171}
   averageHenSpeed: 0
   averageFoxSpeed: 0
---- !u!114 &1951365573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1951365569}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 978b94866ee50764e8f0e6a95ac6189f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fileName: data.txt
 --- !u!1001 &1969312589
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7739,6 +7725,14 @@ PrefabInstance:
     - target: {fileID: 584866671820157511, guid: adc28cffd3a822844ab66faf39ff0a5f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 584866672039992760, guid: adc28cffd3a822844ab66faf39ff0a5f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 76.503
+      objectReference: {fileID: 0}
+    - target: {fileID: 584866673020983435, guid: adc28cffd3a822844ab66faf39ff0a5f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 76.546
       objectReference: {fileID: 0}
     - target: {fileID: 584866673057631835, guid: adc28cffd3a822844ab66faf39ff0a5f, type: 3}
       propertyPath: m_LocalPosition.x

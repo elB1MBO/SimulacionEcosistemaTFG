@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour
 {
 
-    private float speed = 0.04f;
+    private float speed = 0.1f;
     private float zoomSpeed = 5f;
     private float rotationSpeed = 0.1f;
 
@@ -22,14 +22,27 @@ public class CameraMovement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         SetCameraMovement();
         SetCameraRotation();
     }
 
+    private void LateUpdate()
+    {
+        if (Time.timeScale == 0)
+        {
+            SetCameraMovement();
+            SetCameraRotation();
+        }
+    }
+
     void SetCameraMovement()
     {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            speed = 0.2f;
+        }else if (Input.GetKeyUp(KeyCode.LeftShift)) { speed = 0.1f; }
         float hsp = 0f;
         if (Input.GetKey(KeyCode.A)) // Tecla para mover a la izquierda
         {
