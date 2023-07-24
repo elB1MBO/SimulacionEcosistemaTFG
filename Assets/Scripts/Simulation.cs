@@ -19,7 +19,7 @@ public class Simulation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Application.targetFrameRate = 80;
+        Application.targetFrameRate = 200;
         //Spawn x hens at random positions
         for (int i = 0; i < startHenNumber; i++)
         {

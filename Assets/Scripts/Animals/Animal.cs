@@ -59,7 +59,7 @@ public class Animal : MonoBehaviour
 
     [SerializeField] private ParticleSystem reproduceParticleSystem;
 
-    [SerializeField] public GameObject model;
+    public GameObject model;
 
     // Start is called before the first frame update
     void Start()

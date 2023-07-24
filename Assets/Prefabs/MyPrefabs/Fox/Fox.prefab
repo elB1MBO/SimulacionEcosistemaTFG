@@ -57,7 +57,7 @@ MonoBehaviour:
   allTargets: []
   nearestTarget: {fileID: 0}
   speed: 3
-  energyWasteValue: 0.05
+  energyWasteValue: 0.04
   energyRestoreValue: 0.12
   navMeshAgent: {fileID: 7625240314554251840}
   animalContainer: {fileID: 0}
