@@ -12,7 +12,7 @@ public class PopulationUI : MonoBehaviour
     public TextMeshProUGUI averageHenSpeed;
     public TextMeshProUGUI averageFoxSpeed;
 
-    [SerializeField] GameObject simulator; 
+    [SerializeField] private Simulation simulator; 
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +24,7 @@ public class PopulationUI : MonoBehaviour
     {
         this.henPopulationNumber.text = GameObject.FindGameObjectsWithTag("Hen").Length.ToString();
         this.foxPopulationNumber.text = GameObject.FindGameObjectsWithTag("Fox").Length.ToString();
-        this.averageHenSpeed.text = simulator.GetComponent<Simulation>().averageHenSpeed.ToString();
-        this.averageFoxSpeed.text = simulator.GetComponent<Simulation>().averageFoxSpeed.ToString();
+        this.averageHenSpeed.text = simulator.averageHenSpeed.ToString();
+        this.averageFoxSpeed.text = simulator.averageFoxSpeed.ToString();
     }
 }

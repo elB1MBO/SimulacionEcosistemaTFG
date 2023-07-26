@@ -6,20 +6,14 @@ public class CameraMovement : MonoBehaviour
 {
 
     private float speed = 0.1f;
-    private float zoomSpeed = 5f;
-    private float rotationSpeed = 0.1f;
+    private readonly float zoomSpeed = 5f;
+    private readonly float rotationSpeed = 0.1f;
 
-    private float maxHeight=40f;
-    private float minHeight=4f;
+    private readonly float maxHeight=40f;
+    private readonly float minHeight=4f;
 
     Vector3 p1;
     Vector3 p2;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void FixedUpdate()

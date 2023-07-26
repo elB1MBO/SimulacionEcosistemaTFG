@@ -34,8 +34,8 @@ public class Simulation : MonoBehaviour
             newFox.GetComponent<Animal>().SetAnimalContainer(FoxContainer);
         }
 
-        InvokeRepeating("CalculateAverageSpeed", 0f, 1f);
-        InvokeRepeating("SaveData", 0f, 1f);
+        InvokeRepeating(nameof(CalculateAverageSpeed), 0f, 1f);
+        //InvokeRepeating(nameof(SaveData), 0f, 1f);
     }
 
     // Update is called once per frame
@@ -85,12 +85,12 @@ public class Simulation : MonoBehaviour
 
     void SaveData()
     {
-        using (StreamWriter writerH = new StreamWriter("Assets/Data/hens.txt", true))
+        using (StreamWriter writerH = new("Assets/Data/hens.txt", true))
         {
             writerH.WriteLine(GameObject.FindGameObjectsWithTag("Hen").Length.ToString());
         }
 
-        using (StreamWriter writerF = new StreamWriter("Assets/Data/foxes.txt", true))
+        using (StreamWriter writerF = new("Assets/Data/foxes.txt", true))
         {
             writerF.WriteLine(GameObject.FindGameObjectsWithTag("Fox").Length.ToString());
         }

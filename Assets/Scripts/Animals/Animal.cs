@@ -13,7 +13,6 @@ public class Animal : MonoBehaviour
     public float senseRange;
     public string targetTag;
     public List<GameObject> allTargets;
-    private List<GameObject> irtargets;
     public GameObject nearestTarget;
 
     private Plant plantTarget;
@@ -65,6 +64,7 @@ public class Animal : MonoBehaviour
     void Start()
     {
         navMeshAgent.speed = this.speed;
+        //navMeshAgent.stoppingDistance = 0.1f;
 
         this.energyWasteValue *= (this.speed / 2f);
 
@@ -79,7 +79,7 @@ public class Animal : MonoBehaviour
         reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
 
         //this.reproduceParticleSystem = GetComponent<ParticleSystem>();
-
+        InvokeRepeating(nameof(GetOrderedTargets), 0f, 1f);
         StartCoroutine(Awaiter(waitTime));
     }
 
@@ -87,9 +87,9 @@ public class Animal : MonoBehaviour
     void FixedUpdate()
     {
 
-        GetAllTargets();
+        //GetAllTargets();
 
-        SetTarget();
+        //SetTarget();
 
         UpdateValues();
 
@@ -97,7 +97,7 @@ public class Animal : MonoBehaviour
 
         SetAnimation();
 
-        if (this.gameObject.tag == "Hen")
+        if (gameObject.CompareTag("Hen"))
         {
             CheckPredators();
         }
@@ -186,34 +186,90 @@ public class Animal : MonoBehaviour
     }
     void SetTarget()
     {
-        List<GameObject> inRangeTargets = GetInRangeTargets();
-        irtargets = inRangeTargets;
-
-        if(inRangeTargets.Count == 0)
+        // Como la lista esta ordenada, solo hay que comprobar si el primero esta en rango o no
+        if ((allTargets[0].transform.position - transform.position).sqrMagnitude > senseRange*senseRange)
         {
             Explore();
         }
         else
         {
             randomPointSetted = false;
-            GetClosestTarget(inRangeTargets);
+            nearestTarget = allTargets[0];
 
-            if (nearestTarget == null || nearestTarget.tag == "Growing")
+            if (nearestTarget == null || nearestTarget.CompareTag("Growing"))
             {
                 StartCoroutine(Awaiter(waitTime));
             }
-            else if (nearestTarget.tag == "Water")
+            else if (nearestTarget.CompareTag("Water"))
             {
-                Vector3 targetClosestPoint = nearestTarget.GetComponent<Collider>().ClosestPoint(this.transform.position);
-                navMeshAgent.SetDestination(targetClosestPoint);
+                if (navMeshAgent.isOnNavMesh)
+                {
+                    Vector3 targetClosestPoint = nearestTarget.GetComponent<Collider>().ClosestPoint(this.transform.position);
+                    navMeshAgent.SetDestination(targetClosestPoint);
+                }
             }
-            else if (nearestTarget.tag == "Food" || nearestTarget.tag == "Hen" || nearestTarget.tag == this.gameObject.tag) //Si es un bush, no importa, ya que se detiene al colisionar
+            else if (nearestTarget.CompareTag("Food") || nearestTarget.CompareTag("Hen") || this.gameObject.CompareTag(nearestTarget.tag)) //Si es un bush, no importa, ya que se detiene al colisionar
             {
-                Vector3 targetPosition = nearestTarget.transform.position;
-                navMeshAgent.SetDestination(targetPosition);
+                if (navMeshAgent.isOnNavMesh)
+                {
+                    Vector3 targetPosition = nearestTarget.transform.position;
+                    navMeshAgent.SetDestination(targetPosition);
+                }
             }
         }
+
+        //List<GameObject> inRangeTargets = GetInRangeTargets();
+
+        //if(inRangeTargets.Count == 0)
+        //{
+        //    Explore();
+        //}
+        //else
+        //{
+        //    randomPointSetted = false;
+        //    GetClosestTarget(inRangeTargets);
+
+        //if (nearestTarget == null || nearestTarget.CompareTag("Growing"))
+        //{
+        //    StartCoroutine(Awaiter(waitTime));
+        //}
+        //else if (nearestTarget.CompareTag("Water"))
+        //{
+        //    if (navMeshAgent.isOnNavMesh)
+        //    {
+        //        Vector3 targetClosestPoint = nearestTarget.GetComponent<Collider>().ClosestPoint(this.transform.position);
+        //        navMeshAgent.SetDestination(targetClosestPoint);
+        //    }
+        //}
+        //else if (nearestTarget.CompareTag("Food") || nearestTarget.CompareTag("Hen") || this.gameObject.CompareTag(nearestTarget.tag)) //Si es un bush, no importa, ya que se detiene al colisionar
+        //{
+        //    if (navMeshAgent.isOnNavMesh)
+        //    {
+        //        Vector3 targetPosition = nearestTarget.transform.position;
+        //        navMeshAgent.SetDestination(targetPosition);
+        //    }
+        //}
+        //}
     }
+    void GetAllTargets()
+    {
+        this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
+        if (this.gameObject.CompareTag(targetTag))
+        {
+            this.allTargets.Remove(this.gameObject);
+        }
+    }
+
+    void GetOrderedTargets()
+    {
+        this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList();
+        if (this.gameObject.CompareTag(targetTag))
+        {
+            this.allTargets.Remove(this.gameObject);
+        }
+        SetTarget();
+    }
+
     List<GameObject> GetInRangeTargets()
     {
         List<GameObject> inRangeTargets = new List<GameObject>();
@@ -256,18 +312,9 @@ public class Animal : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         //if (targetTag == null || targetTag == string.Empty) { this.gameObject.name = "Gallina"; }
-        GetAllTargets();
+        //GetAllTargets();
         this.nearestTarget = null;
-        this.minDist = Mathf.Infinity;
-    }
-
-    void GetAllTargets()
-    {
-        this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
-        if (targetTag == this.gameObject.tag)
-        {
-            this.allTargets.Remove(this.gameObject);
-        }
+        //this.minDist = Mathf.Infinity;
     }
 
     void Eat(Plant plant)
@@ -316,16 +363,22 @@ public class Animal : MonoBehaviour
         {
             currentAction = Actions.IDLE;
 
-            GameObject newAnimal = Instantiate(this.gameObject, gameObject.transform.position, Quaternion.identity, animalContainer.transform);
-
-            float newSpeed = (this.speed + this.mate.speed + Random.Range(-0.5f, 0.5f)) / 2f;
-
-            newAnimal.GetComponentInChildren<Animal>().speed = newSpeed;
-
-            SetColor(newAnimal, newSpeed);
-            
-            //this.reproduceParticleSystem.Stop();
+            //Espera 2 segs y crea al nuevo animal
+            Invoke(nameof(SpawnAnimal), 0f);            
         }
+    }
+
+    void SpawnAnimal()
+    {
+        Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+
+        GameObject newAnimal = Instantiate(this.gameObject, spawnPos, Quaternion.identity, animalContainer.transform);
+
+        float newSpeed = (this.speed + this.mate.speed + Random.Range(-0.5f, 0.5f)) / 2f;
+
+        newAnimal.GetComponentInChildren<Animal>().speed = newSpeed;
+
+        SetColor(newAnimal, newSpeed);
     }
 
     void SetColor(GameObject animal, float speed)
@@ -376,7 +429,10 @@ public class Animal : MonoBehaviour
         {
             //Genera un punto aleatorio dentro del NavMesh
             randomPoint = RandomNavMeshPoint();
-            navMeshAgent.SetDestination(randomPoint); 
+            if (navMeshAgent.isOnNavMesh)
+            {
+                navMeshAgent.SetDestination(randomPoint);
+            } 
             randomPointSetted = true;
         }
         if (Vector3.Distance(this.transform.position, randomPoint) <= 1)
