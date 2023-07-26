@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditorInternal.VR;
 using UnityEngine;
 using UnityEngine.AI;
 using static UnityEngine.GraphicsBuffer;
@@ -59,7 +60,7 @@ public class Animal : MonoBehaviour
     [SerializeField] private ParticleSystem reproduceParticleSystem;
 
     public GameObject model;
-
+    private List<GameObject> predators;
     // Start is called before the first frame update
     void Start()
     {
@@ -79,7 +80,7 @@ public class Animal : MonoBehaviour
         reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
 
         //this.reproduceParticleSystem = GetComponent<ParticleSystem>();
-        InvokeRepeating(nameof(GetOrderedTargets), 0f, 1f);
+        InvokeRepeating(nameof(GetOrderedTargets), 0f, 1f * (1/Time.timeScale));
         StartCoroutine(Awaiter(waitTime));
     }
 
@@ -89,7 +90,7 @@ public class Animal : MonoBehaviour
 
         //GetAllTargets();
 
-        //SetTarget();
+        SetTarget();
 
         UpdateValues();
 
@@ -108,18 +109,59 @@ public class Animal : MonoBehaviour
     void CheckPredators()
     {
         if (this.navMeshAgent == null) { return; }
-        List<GameObject> predators = GameObject.FindGameObjectsWithTag("Fox").ToList();
-        foreach (GameObject predator in predators)
-        {
-            float distance = Vector3.Distance(transform.position, predator.transform.position);
 
-            if(distance < this.senseRange*0.75f)
+        // Huye del depredador más cercano
+        GameObject predator = GameObject.FindGameObjectsWithTag("Fox").OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).FirstOrDefault();
+        if (predator != null)
+        {
+            float distance = (predator.transform.position - transform.position).sqrMagnitude;
+            float sqrSenseRange = senseRange * senseRange * 0.25f; // 0.25 = 0.5 * 0.5
+            if (distance < sqrSenseRange)
             {
                 Vector3 dirToPredator = transform.position - predator.transform.position;
                 Vector3 newPos = transform.position + dirToPredator;
                 this.navMeshAgent.SetDestination(newPos);
             }
         }
+
+        //GameObject predatorsContainer = GameObject.FindGameObjectWithTag("FoxContainer");
+        //// Obtener todos los hijos del objeto actual
+        //List<GameObject> predators = new List<GameObject>();
+        //foreach (Transform child in predatorsContainer.transform)
+        //{
+        //    // Agregar el hijo a la lista (sin incluir el propio objeto)
+        //    if (child.gameObject != predatorsContainer)
+        //    {
+        //        predators.Add(child.gameObject);
+        //    }
+        //}
+
+        //float sqrSenseRange = senseRange * senseRange * 0.25f; // 0.25 = 0.5 * 0.5
+        //// Hacer algo con los hijos
+        //foreach (GameObject predator in predators)
+        //{
+        //    float distance = (predator.transform.position - transform.position).sqrMagnitude;
+        //    if (distance < sqrSenseRange)
+        //    {
+        //        Vector3 dirToPredator = transform.position - predator.transform.position;
+        //        Vector3 newPos = transform.position + dirToPredator;
+        //        this.navMeshAgent.SetDestination(newPos);
+        //    }
+        //}
+
+        //List<GameObject> predators = GameObject.FindGameObjectsWithTag("Fox").ToList();
+        //foreach (GameObject predator in predators)
+        //{
+        //    float distance = Vector3.Distance(transform.position, predator.transform.position);
+
+        //    if(distance < this.senseRange*0.75f)
+        //    {
+        //        Vector3 dirToPredator = transform.position - predator.transform.position;
+        //        Vector3 newPos = transform.position + dirToPredator;
+        //        this.navMeshAgent.SetDestination(newPos);
+        //    }
+        //}
+
     }
 
     void UpdateValues()
@@ -170,7 +212,7 @@ public class Animal : MonoBehaviour
         switch (currentAction)
         {
             case Actions.SEARCHING_FOOD:
-                if (this.gameObject.tag == "Fox") { targetTag = "Hen"; }
+                if (this.gameObject.CompareTag("Fox")) { targetTag = "Hen"; }
                 else targetTag = "Food";
                 break;
             case Actions.SEARCHING_WATER: targetTag = "Water"; break;
@@ -187,7 +229,11 @@ public class Animal : MonoBehaviour
     void SetTarget()
     {
         // Como la lista esta ordenada, solo hay que comprobar si el primero esta en rango o no
-        if ((allTargets[0].transform.position - transform.position).sqrMagnitude > senseRange*senseRange)
+        if (allTargets.Count == 0)
+        {
+            Explore();
+        }
+        else if (allTargets[0] == null || (allTargets[0].transform.position - transform.position).sqrMagnitude > (senseRange*senseRange))
         {
             Explore();
         }
@@ -267,7 +313,7 @@ public class Animal : MonoBehaviour
         {
             this.allTargets.Remove(this.gameObject);
         }
-        SetTarget();
+        //SetTarget();
     }
 
     List<GameObject> GetInRangeTargets()
@@ -469,6 +515,7 @@ public class Animal : MonoBehaviour
             if (other.gameObject.tag == "Hen" && currentAction == Actions.SEARCHING_FOOD)
             {
                 Destroy(other.gameObject);
+                nearestTarget = null;
                 this.currentHunger = 3; //el zorro satisface su hambre si se come una gallina
             }
         }
