@@ -68,7 +68,7 @@ public class Animal : MonoBehaviour
         //navMeshAgent.stoppingDistance = 0.1f;
 
         energyRestoreValue = 0.2f;
-        energyWasteValue = 0.05f * (this.speed / 2f);
+        energyWasteValue = 0.04f * (this.speed / 2f);
 
         //animator = this.GetComponentInChildren<Animator>();
 
@@ -396,22 +396,29 @@ public class Animal : MonoBehaviour
         float dif;
         if (this.CompareTag("Fox"))
         {
-            dif = speed - 3f;
+            dif = (speed - 4f) * 0.5f;
 
-            Renderer renderer = animal.GetComponent<Animal>().GetModel().GetComponent<Renderer>();
-            newColor = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b);
+            newColor = new Color(0.8867924f, 0.3650719f, 0.05437878f); // color base del zorro
         }
         else
         {
-            dif = speed - 2f;
-            newColor = new Color(1, 1, 1);
+            dif = (speed - 2f) * 0.5f;
+            newColor = new Color(1, 1, 1); // color base de la gallina
         }
 
         if (dif > 0f)
         {
-            //Si es mayor, significa que es mas rapido, luego hay que bajar los valores de green y blue para que sea mas rojo
-            newColor.g -= dif;
-            newColor.b -= dif;
+            //Si es mayor, significa que es mas rapido, luego hay que bajar los valores de green y blue para que sea mas rojo (el zorro sera más amarillo para tener mayor margen de cambio)
+            if (this.CompareTag("Fox"))
+            {
+                newColor.g += dif;
+                newColor.b -= dif;
+            }
+            else
+            {
+                newColor.g -= dif;
+                newColor.b -= dif;
+            }
         }
         else
         {
