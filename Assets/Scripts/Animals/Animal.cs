@@ -25,8 +25,8 @@ public class Animal : MonoBehaviour
     [SerializeField] float speed;
     public float GetSpeed() { return speed; }
 
-    [SerializeField] float energyWasteValue;
-    [SerializeField] float energyRestoreValue;
+    float energyWasteValue;
+    float energyRestoreValue;
 
     public NavMeshAgent navMeshAgent;
 
@@ -67,7 +67,8 @@ public class Animal : MonoBehaviour
         navMeshAgent.speed = this.speed;
         //navMeshAgent.stoppingDistance = 0.1f;
 
-        this.energyWasteValue *= (this.speed / 2f);
+        energyRestoreValue = 0.2f;
+        energyWasteValue = 0.05f * (this.speed / 2f);
 
         //animator = this.GetComponentInChildren<Animator>();
 
@@ -120,48 +121,10 @@ public class Animal : MonoBehaviour
             {
                 Vector3 dirToPredator = transform.position - predator.transform.position;
                 Vector3 newPos = transform.position + dirToPredator;
+                currentAction = Actions.FLEEING;
                 this.navMeshAgent.SetDestination(newPos);
             }
         }
-
-        //GameObject predatorsContainer = GameObject.FindGameObjectWithTag("FoxContainer");
-        //// Obtener todos los hijos del objeto actual
-        //List<GameObject> predators = new List<GameObject>();
-        //foreach (Transform child in predatorsContainer.transform)
-        //{
-        //    // Agregar el hijo a la lista (sin incluir el propio objeto)
-        //    if (child.gameObject != predatorsContainer)
-        //    {
-        //        predators.Add(child.gameObject);
-        //    }
-        //}
-
-        //float sqrSenseRange = senseRange * senseRange * 0.25f; // 0.25 = 0.5 * 0.5
-        //// Hacer algo con los hijos
-        //foreach (GameObject predator in predators)
-        //{
-        //    float distance = (predator.transform.position - transform.position).sqrMagnitude;
-        //    if (distance < sqrSenseRange)
-        //    {
-        //        Vector3 dirToPredator = transform.position - predator.transform.position;
-        //        Vector3 newPos = transform.position + dirToPredator;
-        //        this.navMeshAgent.SetDestination(newPos);
-        //    }
-        //}
-
-        //List<GameObject> predators = GameObject.FindGameObjectsWithTag("Fox").ToList();
-        //foreach (GameObject predator in predators)
-        //{
-        //    float distance = Vector3.Distance(transform.position, predator.transform.position);
-
-        //    if(distance < this.senseRange*0.75f)
-        //    {
-        //        Vector3 dirToPredator = transform.position - predator.transform.position;
-        //        Vector3 newPos = transform.position + dirToPredator;
-        //        this.navMeshAgent.SetDestination(newPos);
-        //    }
-        //}
-
     }
 
     void UpdateValues()
@@ -386,7 +349,7 @@ public class Animal : MonoBehaviour
     {
         if (currentThirst > 1)
         {
-            currentThirst -= energyRestoreValue * Time.timeScale;
+            currentThirst -= energyRestoreValue * 2 * Time.timeScale;
         }
         else
         {
@@ -431,7 +394,7 @@ public class Animal : MonoBehaviour
     {
         Color newColor;
         float dif;
-        if (this.tag == "Fox")
+        if (this.CompareTag("Fox"))
         {
             dif = speed - 3f;
 
@@ -481,14 +444,22 @@ public class Animal : MonoBehaviour
             } 
             randomPointSetted = true;
         }
-        if (Vector3.Distance(this.transform.position, randomPoint) <= 1)
+        if ((transform.position - randomPoint).sqrMagnitude <= 1)
         {
             randomPointSetted = false;
         }
-        else if(Vector3.Distance(this.transform.position, destino) <= 1)
+        else if ((transform.position - destino).sqrMagnitude <= 1)
         {
             this.navMeshAgent.SetDestination(randomPoint);
         }
+        //if (Vector3.Distance(this.transform.position, randomPoint) <= 1)
+        //{
+        //    randomPointSetted = false;
+        //}
+        //else if(Vector3.Distance(this.transform.position, destino) <= 1)
+        //{
+        //    this.navMeshAgent.SetDestination(randomPoint);
+        //}
     }
 
     Vector3 RandomNavMeshPoint()
@@ -506,13 +477,13 @@ public class Animal : MonoBehaviour
     public void OnTriggerEvent(Collider other)
     {
         //Aquí, dependiendo del tipo de objeto con el que se encuentre, hará una cosa u otra
-        if (other.gameObject.tag == "Water" && currentAction == Actions.SEARCHING_WATER)
+        if (other.gameObject.CompareTag("Water") && currentAction == Actions.SEARCHING_WATER)
         {
             currentAction = Actions.DRINKING;
         }
-        if(this.gameObject.tag == "Fox")
+        if(this.gameObject.CompareTag("Fox"))
         {
-            if (other.gameObject.tag == "Hen" && currentAction == Actions.SEARCHING_FOOD)
+            if (other.gameObject.CompareTag("Hen") && currentAction == Actions.SEARCHING_FOOD)
             {
                 Destroy(other.gameObject);
                 nearestTarget = null;
@@ -521,19 +492,19 @@ public class Animal : MonoBehaviour
         }
         else
         {
-            if (other.gameObject.tag == "Food" && currentAction == Actions.SEARCHING_FOOD)
+            if (other.gameObject.CompareTag("Food") && currentAction == Actions.SEARCHING_FOOD)
             {
                 //Como por ahora el unico tipo de comida es Plant, si el tag es food sabemos que es una planta, por lo que obtenemos el componente del padre del gameObject
                 this.plantTarget = other.GetComponentInParent<Plant>(); //Guardamos la planta objetivo
                 currentAction = Actions.EATING; //Actualizamos la accion
             }
         }
-        if (other.gameObject.tag == this.gameObject.tag && currentAction == Actions.SEARCHING_MATE) // && other.GetComponent<Animal>().GetCurrentAction() == Actions.SEARCHING_MATE
+        if (this.gameObject.CompareTag(other.gameObject.tag) && currentAction == Actions.SEARCHING_MATE) // && other.GetComponent<Animal>().GetCurrentAction() == Actions.SEARCHING_MATE
         {
             this.mate = other.gameObject.GetComponentInChildren<Animal>();
             currentAction = Actions.MATING;
         }
-        if (other.gameObject.tag == "RandomPoint")
+        if (other.gameObject.CompareTag("RandomPoint"))
         {
             Destroy(other.gameObject);
         }
@@ -552,8 +523,8 @@ public class Animal : MonoBehaviour
 
     void SetAnimation()
     {
-        if(this.tag == "Fox") { return; }
-        if (currentAction == Actions.SEARCHING_WATER || currentAction == Actions.SEARCHING_FOOD || currentAction == Actions.SEARCHING_MATE)
+        if(this.CompareTag("Fox")) { return; }
+        if (currentAction == Actions.SEARCHING_WATER || currentAction == Actions.SEARCHING_FOOD || currentAction == Actions.SEARCHING_MATE || currentAction == Actions.FLEEING)
         {
             //Hay que declarar la "actual" a false antes de indicarle la nueva
             animator.SetBool("Eat", false);
@@ -585,6 +556,6 @@ public enum Actions
     DRINKING,
     SEARCHING_MATE,
     MATING,
-    EXPLORING
+    FLEEING
 }
 
