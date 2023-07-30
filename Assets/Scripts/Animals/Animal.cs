@@ -174,7 +174,7 @@ public class Animal : MonoBehaviour
         {
             case Actions.SEARCHING_FOOD:
                 if (this.gameObject.CompareTag("Fox")) { targetTag = "Hen"; }
-                else targetTag = "Food";
+                else targetTag = "BushResource";
                 break;
             case Actions.SEARCHING_WATER: targetTag = "Water"; break;
             case Actions.SEARCHING_MATE: targetTag = this.gameObject.tag; break;
@@ -215,7 +215,7 @@ public class Animal : MonoBehaviour
                     navMeshAgent.SetDestination(targetClosestPoint);
                 }
             }
-            else if (nearestTarget.CompareTag("Food") || nearestTarget.CompareTag("Hen") || this.gameObject.CompareTag(nearestTarget.tag)) //Si es un bush, no importa, ya que se detiene al colisionar
+            else if (nearestTarget.CompareTag("BushResource") || nearestTarget.CompareTag("Hen") || this.gameObject.CompareTag(nearestTarget.tag)) //Si es un bush, no importa, ya que se detiene al colisionar
             {
                 if (navMeshAgent.isOnNavMesh)
                 {
@@ -345,6 +345,9 @@ public class Animal : MonoBehaviour
 
     void Drink()
     {
+        navMeshAgent.SetDestination(this.transform.position);
+        //Si se encuentra con una planta, hay que decirle al navigation que el nuevo objetivo es la posición actual, para que no se coloque en el centro de la planta:
+        nearestTarget = this.gameObject; // -------> IMPORTANTE
         if (currentThirst > 1)
         {
             currentThirst -= energyRestoreValue * 2 * Time.timeScale;

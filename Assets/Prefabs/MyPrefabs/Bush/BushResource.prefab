@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7022823418083211255}
   - component: {fileID: 7022823418083211254}
+  - component: {fileID: 2289895361045072804}
+  - component: {fileID: 5647010010436093244}
   m_Layer: 0
   m_Name: BushResource
   m_TagString: BushResource
@@ -25,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7022823418083211249}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 27.68, y: 2.35, z: 45.24}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -48,6 +50,32 @@ MonoBehaviour:
   foodAmount: 100
   edible: 1
   hensEating: 0
+--- !u!65 &2289895361045072804
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7022823418083211249}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.4, y: 0.51553077, z: 1.4}
+  m_Center: {x: -0.07779816, y: 0.23830992, z: -0.14249325}
+--- !u!114 &5647010010436093244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7022823418083211249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab9a5ed8b64a0cf47abb77f61be4c896, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plant: {fileID: 7022823418083211254}
 --- !u!1001 &2136072170540806914
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -111,7 +139,8 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Food
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7964526788223412268, guid: 18d6506e69389864aa120c2e1d867b6d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 18d6506e69389864aa120c2e1d867b6d, type: 3}
 --- !u!1 &6134584208917699184 stripped
 GameObject:
