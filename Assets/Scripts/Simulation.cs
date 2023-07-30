@@ -14,6 +14,8 @@ public class Simulation : MonoBehaviour
     [SerializeField] public GameObject Fox;
     [SerializeField] public GameObject FoxContainer;
 
+    [SerializeField] public GameObject BushContainer;
+
     public float averageHenSpeed = 0f;
     public float averageFoxSpeed = 0f;
     // Start is called before the first frame update

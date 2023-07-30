@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditorInternal.VR;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.GraphicsBuffer;
 
 /**
  * Animal basic class
@@ -552,6 +550,23 @@ public class Animal : MonoBehaviour
             animator.SetBool("Idle", true);
         }
     }
+
+    // Para activar y desactivar el Animator
+    //private void OnBecameInvisible()
+    //{
+    //    if(animator != null)
+    //    {
+    //        animator.enabled = false;
+    //    }
+    //}
+
+    //private void OnBecameVisible()
+    //{
+    //    if (animator != null)
+    //    {
+    //        animator.enabled = true;
+    //    }
+    //}
 }
 
 public enum Actions

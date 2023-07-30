@@ -14,7 +14,6 @@ public class BlueprintPreview : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
         simulatorManager = GameObject.FindGameObjectWithTag("SimulatorManager");
 
         switch (prefab.tag)
@@ -24,6 +23,9 @@ public class BlueprintPreview : MonoBehaviour
                 break;
             case "Fox":
                 this.container = this.simulatorManager.GetComponent<Simulation>().FoxContainer;
+                break;
+            case "BushResource":
+                this.container = this.simulatorManager.GetComponent<Simulation>().BushContainer;
                 break;
         }
 
@@ -46,6 +48,9 @@ public class BlueprintPreview : MonoBehaviour
             case "Fox":
                 this.container = this.simulatorManager.GetComponent<Simulation>().FoxContainer;
                 break;
+            case "BushResource":
+                this.container = this.simulatorManager.GetComponent<Simulation>().BushContainer;
+                break;
         }
 
         //Para evitar que se generen si se clicka sobre un boton o algo que no sea el terreno
@@ -62,8 +67,15 @@ public class BlueprintPreview : MonoBehaviour
         {
             if (transform.position.y < 5)
             {
-                GameObject newAnimal = Instantiate(prefab, transform.position, transform.rotation, this.container.transform);
-                newAnimal.GetComponent<Animal>().SetAnimalContainer(container);
+                if (prefab.CompareTag("BushResource"))
+                {
+                    Instantiate(prefab, transform.position, Quaternion.identity, this.container.transform);
+                }
+                else
+                {
+                    GameObject newAnimal = Instantiate(prefab, transform.position, transform.rotation, this.container.transform);
+                    newAnimal.GetComponent<Animal>().SetAnimalContainer(container);
+                }       
             }
             else { Debug.LogWarning("No puedes colocarlo tan alto"); }
         }

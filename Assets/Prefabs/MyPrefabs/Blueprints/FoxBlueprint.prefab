@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8627010000176843973}
   - component: {fileID: 4802657300374917565}
   - component: {fileID: 4833255015191652823}
-  - component: {fileID: 5814769605369729271}
   m_Layer: 3
   m_Name: FoxModel
   m_TagString: Untagged
@@ -87,26 +86,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!95 &5814769605369729271
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6514401503350289563}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5793bc0dec444c0468f3318c0e84b6fd, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &7483449668990713203
 GameObject:
   m_ObjectHideFlags: 0
