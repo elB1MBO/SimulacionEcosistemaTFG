@@ -11,12 +11,17 @@ public class PopulationUI : MonoBehaviour
     public TextMeshProUGUI foxPopulationNumber;
     public TextMeshProUGUI averageHenSpeed;
     public TextMeshProUGUI averageFoxSpeed;
+    public TextMeshProUGUI thirstDeaths;
+    public TextMeshProUGUI starvationDeaths;
+    public TextMeshProUGUI devouredDeaths;
 
-    [SerializeField] private Simulation simulator; 
+
+    [SerializeField] private Simulation simulator;
+    [SerializeField] private DeathManager deathManager;
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("UpdateValues", 0f, 1f);
+        InvokeRepeating(nameof(UpdateValues), 0f, 1f);
     }
 
     // Update is called once per frame
@@ -26,5 +31,8 @@ public class PopulationUI : MonoBehaviour
         this.foxPopulationNumber.text = GameObject.FindGameObjectsWithTag("Fox").Length.ToString();
         this.averageHenSpeed.text = simulator.averageHenSpeed.ToString();
         this.averageFoxSpeed.text = simulator.averageFoxSpeed.ToString();
+        this.thirstDeaths.text = deathManager.GetDeathsByThirst().ToString();
+        this.starvationDeaths.text = deathManager.GetDeathsByStarvation().ToString();
+        this.devouredDeaths.text = deathManager.GetDeathsByDevoured().ToString();
     }
 }

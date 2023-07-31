@@ -22,19 +22,17 @@ public class DeathManager : MonoBehaviour
 
     public void Die(GameObject animal, CauseOfDeath causeOfDeath)
     {
+        Destroy(animal);
         switch (causeOfDeath)
         {
             case CauseOfDeath.THIRST: thirst++; break;
             case CauseOfDeath.STARVATION: starvation++; break;
             case CauseOfDeath.DEVOURED: devoured++; break;
         }
-
-        Destroy(animal);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Animal destruido por el DeathManager");
         Destroy(other.gameObject);
     }
 }

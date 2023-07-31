@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   foodAmount: 100
   edible: 1
-  hensEating: 0
+  bush: {fileID: 6134584208917699184}
 --- !u!65 &2289895361045072804
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -75,6 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab9a5ed8b64a0cf47abb77f61be4c896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numAnimals: 0
   plant: {fileID: 7022823418083211254}
 --- !u!1001 &2136072170540806914
 PrefabInstance:

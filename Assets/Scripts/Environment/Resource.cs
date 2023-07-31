@@ -12,7 +12,7 @@ public class Resource : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxAnimals = 3;
+        maxAnimals = 4;
         numAnimals = 0;
         objectTag = gameObject.tag;
     }

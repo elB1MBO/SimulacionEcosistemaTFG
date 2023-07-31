@@ -9,7 +9,7 @@ public class Plant : MonoBehaviour
     [SerializeField] public float foodAmount;
     // si llega a 0, habrá que esperar a que crezca para que vuelva a ser comestible
     [SerializeField] private bool edible;
-    [SerializeField] private int hensEating;
+    [SerializeField] private GameObject bush;
 
     public bool IsEdible() { return edible; }
 
@@ -18,23 +18,15 @@ public class Plant : MonoBehaviour
     {
         foodAmount = 100;
         edible = true;
-        hensEating = 0;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         //Comprueba en cada frame la cantidad de comida que tiene el objeto
-        //CheckHensEating();
         CheckFoodAmount();
     }
-    //public void CheckHensEating()
-    //{
-    //    if(hensEating > 5) 
-    //    { 
-    //        //Debug.Log("Limite superado"); 
-    //    }
-    //}
+
     public void CheckFoodAmount()
     {
         if (foodAmount <= 5 || edible == false)
@@ -70,12 +62,6 @@ public class Plant : MonoBehaviour
         // foodAmount = 100 -> scale = 1
         // foodAmount = 99 -> scale = 0.99
         float scale = foodAmount / 100;
-        transform.localScale = new Vector3(scale, scale, scale);
+        bush.transform.localScale = new Vector3(scale, scale, scale);
     }
-
-    public void OnBushCollision(int isHen) //1 for enter hen, -1 when exits a hen
-    {
-        hensEating+=isHen;
-    }
-
 }

@@ -60,8 +60,8 @@ public class Animal : MonoBehaviour
     public GameObject model;
     private List<GameObject> predators;
 
-    [SerializeField] private GameObject dm_prefab;
-    private DeathManager deathManager;
+    [SerializeField] private DeathManager deathManager;
+    public void SetDeathManager(DeathManager dm) { deathManager = dm; }
 
     // Start is called before the first frame update
     void Start()
@@ -81,8 +81,6 @@ public class Animal : MonoBehaviour
         hungryBar.UpdateValueBar(maxPropValue, currentHunger);
         thirstyBar.UpdateValueBar(maxPropValue, currentThirst);
         reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
-
-        deathManager = dm_prefab.GetComponent<DeathManager>();
 
         //this.reproduceParticleSystem = GetComponent<ParticleSystem>();
         InvokeRepeating(nameof(GetOrderedTargets), 0f, 1f * (1/Time.timeScale));
@@ -406,7 +404,7 @@ public class Animal : MonoBehaviour
         }
         else
         {
-            dif = (speed - 2f) * 0.5f;
+            dif = (speed - 2f) * 0.75f;
             newColor = new Color(1, 1, 1); // color base de la gallina
         }
 
@@ -492,15 +490,6 @@ public class Animal : MonoBehaviour
         {
             currentAction = Actions.DRINKING;
         }
-        if(this.gameObject.CompareTag("Fox"))
-        {
-            if (other.gameObject.CompareTag("Hen") && currentAction == Actions.SEARCHING_FOOD)
-            {
-                deathManager.Die(other.gameObject, CauseOfDeath.DEVOURED);
-                nearestTarget = null;
-                this.currentHunger = 3; //el zorro satisface su hambre si se come una gallina
-            }
-        }
         else
         {
             if (other.gameObject.CompareTag("Food") && currentAction == Actions.SEARCHING_FOOD)
@@ -523,6 +512,15 @@ public class Animal : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
+        if (this.gameObject.CompareTag("Fox"))
+        {
+            if (other.gameObject.CompareTag("Hen") && currentAction == Actions.SEARCHING_FOOD)
+            {
+                deathManager.Die(other.gameObject, CauseOfDeath.DEVOURED);
+                nearestTarget = null;
+                this.currentHunger = 3; //el zorro satisface su hambre si se come una gallina
+            }
+        }
         OnTriggerEvent(other);
     }
 

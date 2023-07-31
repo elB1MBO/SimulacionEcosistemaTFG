@@ -6,15 +6,17 @@ using UnityEngine;
 
 public class Simulation : MonoBehaviour
 {
-    [SerializeField] public float startHenNumber;
-    [SerializeField] public GameObject Hen;
-    [SerializeField] public GameObject HenContainer;
+    public float startHenNumber;
+    public GameObject Hen;
+    public GameObject HenContainer;
 
-    [SerializeField] public float startFoxNumber;
-    [SerializeField] public GameObject Fox;
-    [SerializeField] public GameObject FoxContainer;
+    public float startFoxNumber;
+    public GameObject Fox;
+    public GameObject FoxContainer;
 
-    [SerializeField] public GameObject BushContainer;
+    public GameObject BushContainer;
+
+    public DeathManager deathManager;
 
     public float averageHenSpeed = 0f;
     public float averageFoxSpeed = 0f;
@@ -27,6 +29,7 @@ public class Simulation : MonoBehaviour
         {
             GameObject newHen = Instantiate(Hen, new Vector3(Random.Range(30f, 50f), 1, Random.Range(30f, 50f)), Quaternion.Euler(0, 0, 0), HenContainer.transform);
             newHen.GetComponent<Animal>().SetAnimalContainer(HenContainer);
+            newHen.GetComponent<Animal>().SetDeathManager(deathManager);
         }
 
         //Spawn x foxes at random positions
@@ -34,6 +37,7 @@ public class Simulation : MonoBehaviour
         {
             GameObject newFox = Instantiate(Fox, new Vector3(Random.Range(30f, 50f), 1, Random.Range(30f, 50f)), Quaternion.Euler(0, 0, 0), FoxContainer.transform);
             newFox.GetComponent<Animal>().SetAnimalContainer(FoxContainer);
+            newFox.GetComponent<Animal>().SetDeathManager(deathManager);
         }
 
         InvokeRepeating(nameof(CalculateAverageSpeed), 0f, 1f);

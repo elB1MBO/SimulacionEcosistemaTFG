@@ -10,11 +10,13 @@ public class BlueprintPreview : MonoBehaviour
 
     RaycastHit hit;
     public GameObject prefab;
+    private DeathManager deathManager;
 
     // Start is called before the first frame update
     void Start()
     {
         simulatorManager = GameObject.FindGameObjectWithTag("SimulatorManager");
+        deathManager = simulatorManager.GetComponent<Simulation>().deathManager;
 
         switch (prefab.tag)
         {
@@ -75,6 +77,7 @@ public class BlueprintPreview : MonoBehaviour
                 {
                     GameObject newAnimal = Instantiate(prefab, transform.position, transform.rotation, this.container.transform);
                     newAnimal.GetComponent<Animal>().SetAnimalContainer(container);
+                    newAnimal.GetComponent<Animal>().SetDeathManager(deathManager);
                 }       
             }
             else { Debug.LogWarning("No puedes colocarlo tan alto"); }
