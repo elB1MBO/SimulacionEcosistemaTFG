@@ -107,8 +107,6 @@ MonoBehaviour:
   allTargets: []
   nearestTarget: {fileID: 0}
   speed: 2
-  energyWasteValue: 0.04
-  energyRestoreValue: 0.12
   navMeshAgent: {fileID: 2391717790309714698}
   animalContainer: {fileID: 0}
   hungryBar: {fileID: 7770872782416020490}
@@ -117,6 +115,7 @@ MonoBehaviour:
   animator: {fileID: 2334497659658693389}
   reproduceParticleSystem: {fileID: 3028516302818309072}
   model: {fileID: 2392210309248763591}
+  dm_prefab: {fileID: 6361841219466907375, guid: b7e500ad95769d149971ba1bf241ae82, type: 3}
 --- !u!54 &8145248011295276413
 Rigidbody:
   m_ObjectHideFlags: 0

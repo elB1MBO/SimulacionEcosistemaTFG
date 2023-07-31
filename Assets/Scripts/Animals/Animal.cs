@@ -59,6 +59,10 @@ public class Animal : MonoBehaviour
 
     public GameObject model;
     private List<GameObject> predators;
+
+    [SerializeField] private GameObject dm_prefab;
+    private DeathManager deathManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -77,6 +81,8 @@ public class Animal : MonoBehaviour
         hungryBar.UpdateValueBar(maxPropValue, currentHunger);
         thirstyBar.UpdateValueBar(maxPropValue, currentThirst);
         reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
+
+        deathManager = dm_prefab.GetComponent<DeathManager>();
 
         //this.reproduceParticleSystem = GetComponent<ParticleSystem>();
         InvokeRepeating(nameof(GetOrderedTargets), 0f, 1f * (1/Time.timeScale));
@@ -139,11 +145,8 @@ public class Animal : MonoBehaviour
                 } break;
         }
 
-        if (currentHunger >= maxPropValue || currentThirst >= maxPropValue)
-        {
-            Destroy(gameObject);
-        }
-
+        if(maxPropValue <= currentHunger) { deathManager.Die(gameObject, CauseOfDeath.STARVATION); }
+        else if (maxPropValue <= currentThirst) { deathManager.Die(gameObject, CauseOfDeath.THIRST); }
 
         hungryBar.UpdateValueBar(maxPropValue, currentHunger);
         thirstyBar.UpdateValueBar(maxPropValue, currentThirst);
@@ -493,7 +496,7 @@ public class Animal : MonoBehaviour
         {
             if (other.gameObject.CompareTag("Hen") && currentAction == Actions.SEARCHING_FOOD)
             {
-                Destroy(other.gameObject);
+                deathManager.Die(other.gameObject, CauseOfDeath.DEVOURED);
                 nearestTarget = null;
                 this.currentHunger = 3; //el zorro satisface su hambre si se come una gallina
             }

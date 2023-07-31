@@ -65,6 +65,7 @@ MonoBehaviour:
   animator: {fileID: 457701081591594383}
   reproduceParticleSystem: {fileID: 9127872387089592668}
   model: {fileID: 1664803850487887834}
+  dm_prefab: {fileID: 6361841219466907375, guid: b7e500ad95769d149971ba1bf241ae82, type: 3}
 --- !u!195 &7625240314554251840
 NavMeshAgent:
   m_ObjectHideFlags: 0
