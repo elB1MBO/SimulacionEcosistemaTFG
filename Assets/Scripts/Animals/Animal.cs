@@ -81,9 +81,8 @@ public class Animal : MonoBehaviour
         hungryBar.UpdateValueBar(maxPropValue, currentHunger);
         thirstyBar.UpdateValueBar(maxPropValue, currentThirst);
         reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
-
-        //this.reproduceParticleSystem = GetComponent<ParticleSystem>();
-        InvokeRepeating(nameof(GetOrderedTargets), 0f, 1f * (1/Time.timeScale));
+        
+        InvokeRepeating(nameof(GetOrderedTargets), 0f, 1f);
         StartCoroutine(Awaiter(waitTime));
     }
 
@@ -111,7 +110,7 @@ public class Animal : MonoBehaviour
 
     void CheckPredators()
     {
-        if (this.navMeshAgent == null) { return; }
+        if (this.navMeshAgent == null || !this.navMeshAgent.enabled) { return; }
 
         // Huye del depredador más cercano
         GameObject predator = GameObject.FindGameObjectsWithTag("Fox").OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).FirstOrDefault();
@@ -461,14 +460,6 @@ public class Animal : MonoBehaviour
         {
             this.navMeshAgent.SetDestination(randomPoint);
         }
-        //if (Vector3.Distance(this.transform.position, randomPoint) <= 1)
-        //{
-        //    randomPointSetted = false;
-        //}
-        //else if(Vector3.Distance(this.transform.position, destino) <= 1)
-        //{
-        //    this.navMeshAgent.SetDestination(randomPoint);
-        //}
     }
 
     Vector3 RandomNavMeshPoint()
@@ -490,15 +481,14 @@ public class Animal : MonoBehaviour
         {
             currentAction = Actions.DRINKING;
         }
-        else
+
+        if (gameObject.CompareTag("Hen") && other.gameObject.CompareTag("Food") && currentAction == Actions.SEARCHING_FOOD)
         {
-            if (other.gameObject.CompareTag("Food") && currentAction == Actions.SEARCHING_FOOD)
-            {
-                //Como por ahora el unico tipo de comida es Plant, si el tag es food sabemos que es una planta, por lo que obtenemos el componente del padre del gameObject
-                this.plantTarget = other.GetComponentInParent<Plant>(); //Guardamos la planta objetivo
-                currentAction = Actions.EATING; //Actualizamos la accion
-            }
-        }
+            //Como por ahora el unico tipo de comida es Plant, si el tag es food sabemos que es una planta, por lo que obtenemos el componente del padre del gameObject
+            this.plantTarget = other.GetComponentInParent<Plant>(); //Guardamos la planta objetivo
+            currentAction = Actions.EATING; //Actualizamos la accion
+        } 
+
         if (this.gameObject.CompareTag(other.gameObject.tag) && currentAction == Actions.SEARCHING_MATE) // && other.GetComponent<Animal>().GetCurrentAction() == Actions.SEARCHING_MATE
         {
             this.mate = other.gameObject.GetComponentInChildren<Animal>();

@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   senseRange: 12.5
-  targetTag: Food
+  targetTag: Water
   allTargets: []
   nearestTarget: {fileID: 0}
   speed: 4
@@ -65,7 +65,7 @@ MonoBehaviour:
   animator: {fileID: 457701081591594383}
   reproduceParticleSystem: {fileID: 9127872387089592668}
   model: {fileID: 1664803850487887834}
-  dm_prefab: {fileID: 6361841219466907375, guid: b7e500ad95769d149971ba1bf241ae82, type: 3}
+  deathManager: {fileID: 0}
 --- !u!195 &7625240314554251840
 NavMeshAgent:
   m_ObjectHideFlags: 0
