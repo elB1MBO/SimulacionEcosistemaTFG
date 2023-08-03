@@ -31,9 +31,15 @@ public class DeathManager : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void FallDie(GameObject animal)
     {
-        Destroy(other.gameObject);
+        Destroy(animal);
     }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    Debug.Log("Destruido por el death manager");
+    //    Destroy(other.gameObject);
+    //}
 }
 

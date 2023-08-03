@@ -16,6 +16,8 @@ public class DeleteBush : MonoBehaviour
     [SerializeField] private GameObject deleteButton;
     public bool isEnabled = false;
 
+    public GameObject canvas;
+
     public void EnableDelete()
     {
         if (!isEnabled)
@@ -23,13 +25,24 @@ public class DeleteBush : MonoBehaviour
             deleteButton.GetComponent<Button>().Select();
             deleteButton.GetComponent<Image>().color = Color.yellow;
             isEnabled = true;
+            DisableCanvasButton();
         }
         else
         {
-            EventSystem.current.SetSelectedGameObject(null);
-            deleteButton.GetComponent<Image>().color = Color.white;
-            isEnabled = false;
+            Disable();
         }
+    }
+
+    public void Disable()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        deleteButton.GetComponent<Image>().color = Color.white;
+        isEnabled = false;
+    }
+
+    public void DisableCanvasButton()
+    {
+        canvas.GetComponent<SpawnBlueprint>().DisableAll();
     }
 
     private Transform selection;

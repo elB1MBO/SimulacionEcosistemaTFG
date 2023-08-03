@@ -22,6 +22,8 @@ public class SpawnBlueprint : MonoBehaviour
     public GameObject foxButton;
     public GameObject bushButton;
 
+    public GameObject deleteManager;
+
     public void SpawnHenBlueprints()
     {
         if (!henButtonActivated)
@@ -32,6 +34,7 @@ public class SpawnBlueprint : MonoBehaviour
             bushButtonActivated = false;
             if (foxb) { Destroy(foxb); }
             else if(bushb) { Destroy(bushb); }
+            deleteManager.GetComponent<DeleteBush>().Disable();
         }
         else 
         { 
@@ -49,6 +52,7 @@ public class SpawnBlueprint : MonoBehaviour
             bushButtonActivated = false;
             if(henb) { Destroy(henb); }
             else if (bushb) { Destroy(bushb); }
+            deleteManager.GetComponent<DeleteBush>().Disable();
         }
         else 
         { 
@@ -67,12 +71,21 @@ public class SpawnBlueprint : MonoBehaviour
             foxButtonActivated = false;
             if (henb) { Destroy(henb); }
             else if (foxb) { Destroy(foxb); }
+            deleteManager.GetComponent<DeleteBush>().Disable();
         }
         else
         {
             bushButtonActivated = false;
             Destroy(bushb);
         }
+    }
+
+    public void DisableAll()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+        if (henButtonActivated) { henButtonActivated = false; Destroy(henb); }
+        else if (bushButtonActivated) { bushButtonActivated = false; Destroy(bushb); }
+        else if (foxButtonActivated) { foxButtonActivated = false; Destroy(foxb); }
     }
 
     public void Update()

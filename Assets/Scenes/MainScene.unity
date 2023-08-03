@@ -3546,6 +3546,7 @@ MonoBehaviour:
   defaultMaterial: {fileID: 2100000, guid: 93caadf4359ae8143aad35b3145d31af, type: 2}
   deleteButton: {fileID: 1317764713}
   isEnabled: 0
+  canvas: {fileID: 1399774063069024842}
 --- !u!4 &1220268280
 Transform:
   m_ObjectHideFlags: 0
@@ -5952,6 +5953,10 @@ PrefabInstance:
       propertyPath: m_TargetDisplay
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1399774063758322213, guid: 7d2acaab4ffb9a94c895488e4b6abf89, type: 3}
+      propertyPath: deleteManager
+      value: 
+      objectReference: {fileID: 1220268278}
     - target: {fileID: 1399774063758322222, guid: 7d2acaab4ffb9a94c895488e4b6abf89, type: 3}
       propertyPath: m_Name
       value: Canvas

@@ -91,6 +91,7 @@ public class Animal : MonoBehaviour
     {
 
         //GetAllTargets();
+        if(transform.position.y < -10f) { deathManager.FallDie(gameObject); }
 
         SetTarget();
 
