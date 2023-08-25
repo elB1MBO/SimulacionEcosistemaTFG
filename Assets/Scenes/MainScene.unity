@@ -3547,6 +3547,7 @@ MonoBehaviour:
   deleteButton: {fileID: 1317764713}
   isEnabled: 0
   canvas: {fileID: 1399774063069024842}
+  simulationManager: {fileID: 1951365571}
 --- !u!4 &1220268280
 Transform:
   m_ObjectHideFlags: 0
@@ -4046,7 +4047,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1447178412}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -6282,6 +6283,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6361841219466907374, guid: b7e500ad95769d149971ba1bf241ae82, type: 3}
+      propertyPath: simulationManager
+      value: 
+      objectReference: {fileID: 1951365571}
     - target: {fileID: 6361841219466907375, guid: b7e500ad95769d149971ba1bf241ae82, type: 3}
       propertyPath: m_Name
       value: DeathManager

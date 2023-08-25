@@ -18,6 +18,8 @@ public class DeleteBush : MonoBehaviour
 
     public GameObject canvas;
 
+    [SerializeField] private Simulation simulationManager;
+
     public void EnableDelete()
     {
         if (!isEnabled)
@@ -67,6 +69,7 @@ public class DeleteBush : MonoBehaviour
                         selectedRenderer.material = highlightedMaterial;
                         if (Input.GetMouseButtonDown(0))
                         {
+                            simulationManager.RemoveBush(hit.transform.parent.gameObject);
                             Destroy(hit.transform.parent.gameObject);
                         }
                     }

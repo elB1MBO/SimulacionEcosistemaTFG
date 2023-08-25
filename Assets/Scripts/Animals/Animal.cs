@@ -10,6 +10,7 @@ using UnityEngine.AI;
 public class Animal : MonoBehaviour
 {
     public float senseRange;
+    public float senseRangeSquare;
     public string targetTag;
     public List<GameObject> allTargets;
     public GameObject nearestTarget;
@@ -19,20 +20,17 @@ public class Animal : MonoBehaviour
 
     const float waitTime = 1;
 
-    float minDist;
-    [SerializeField] float speed;
-    public float GetSpeed() { return speed; }
+    [SerializeField] private float speed;
 
-    float energyWasteValue;
-    float energyRestoreValue;
+    private float energyWasteValue;
+    private float energyRestoreValue;
 
     public NavMeshAgent navMeshAgent;
 
     private Actions currentAction = Actions.IDLE;
 
     [SerializeField] private GameObject animalContainer;
-    public void SetAnimalContainer(GameObject animalContainer) { this.animalContainer = animalContainer; }
-
+    
     //Properties
     private const float maxPropValue = 100;
 
@@ -44,11 +42,6 @@ public class Animal : MonoBehaviour
     [SerializeField] private BasicBar thirstyBar;
     [SerializeField] private BasicBar reproduceUrgeBar;
 
-    public float GetHunger() { return currentHunger; }
-    public float GetThirst() { return currentThirst; }
-    public float GetReproduceUrge() { return currentReproduceUrge; }
-    public Actions GetCurrentAction() { return currentAction; }
-
     [SerializeField] Animator animator;
 
     Vector3 randomPoint;
@@ -58,10 +51,20 @@ public class Animal : MonoBehaviour
     [SerializeField] private ParticleSystem reproduceParticleSystem;
 
     public GameObject model;
-    private List<GameObject> predators;
+    private GameObject predator;
 
     [SerializeField] private DeathManager deathManager;
+    [SerializeField] private Simulation simulationManager;
+
+    //Getters y Setters
+    public float GetSpeed() { return speed; }
+    public float GetHunger() { return currentHunger; }
+    public float GetThirst() { return currentThirst; }
+    public float GetReproduceUrge() { return currentReproduceUrge; }
+    public Actions GetCurrentAction() { return currentAction; }
+    public void SetAnimalContainer(GameObject animalContainer) { this.animalContainer = animalContainer; }
     public void SetDeathManager(DeathManager dm) { deathManager = dm; }
+    public void SetSimulationManager(Simulation sim) { simulationManager = sim; }
 
     // Start is called before the first frame update
     void Start()
@@ -71,6 +74,8 @@ public class Animal : MonoBehaviour
 
         energyRestoreValue = 0.2f;
         energyWasteValue = 0.04f * (this.speed / 2f);
+
+        senseRangeSquare = senseRange * senseRange;
 
         //animator = this.GetComponentInChildren<Animator>();
 
@@ -89,8 +94,6 @@ public class Animal : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
-        //GetAllTargets();
         if(transform.position.y < -10f) { deathManager.FallDie(gameObject); }
 
         SetTarget();
@@ -114,11 +117,13 @@ public class Animal : MonoBehaviour
         if (this.navMeshAgent == null || !this.navMeshAgent.enabled) { return; }
 
         // Huye del depredador más cercano
-        GameObject predator = GameObject.FindGameObjectsWithTag("Fox").OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).FirstOrDefault();
+        //predator = GameObject.FindGameObjectsWithTag("Fox").OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).FirstOrDefault();
+        //predator = this.simulationManager.foxesArray.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).FirstOrDefault();
+        predator = this.simulationManager.foxesList.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).FirstOrDefault();
         if (predator != null)
         {
             float distance = (predator.transform.position - transform.position).sqrMagnitude;
-            float sqrSenseRange = senseRange * senseRange * 0.25f; // 0.25 = 0.5 * 0.5
+            float sqrSenseRange = senseRangeSquare * 0.25f; // 0.25 = 0.5 * 0.5
             if (distance < sqrSenseRange)
             {
                 Vector3 dirToPredator = transform.position - predator.transform.position;
@@ -195,7 +200,7 @@ public class Animal : MonoBehaviour
         {
             Explore();
         }
-        else if (allTargets[0] == null || (allTargets[0].transform.position - transform.position).sqrMagnitude > (senseRange*senseRange))
+        else if (allTargets[0] == null || (allTargets[0].transform.position - transform.position).sqrMagnitude > (senseRangeSquare))
         {
             Explore();
         }
@@ -225,52 +230,16 @@ public class Animal : MonoBehaviour
                 }
             }
         }
-
-        //List<GameObject> inRangeTargets = GetInRangeTargets();
-
-        //if(inRangeTargets.Count == 0)
-        //{
-        //    Explore();
-        //}
-        //else
-        //{
-        //    randomPointSetted = false;
-        //    GetClosestTarget(inRangeTargets);
-
-        //if (nearestTarget == null || nearestTarget.CompareTag("Growing"))
-        //{
-        //    StartCoroutine(Awaiter(waitTime));
-        //}
-        //else if (nearestTarget.CompareTag("Water"))
-        //{
-        //    if (navMeshAgent.isOnNavMesh)
-        //    {
-        //        Vector3 targetClosestPoint = nearestTarget.GetComponent<Collider>().ClosestPoint(this.transform.position);
-        //        navMeshAgent.SetDestination(targetClosestPoint);
-        //    }
-        //}
-        //else if (nearestTarget.CompareTag("Food") || nearestTarget.CompareTag("Hen") || this.gameObject.CompareTag(nearestTarget.tag)) //Si es un bush, no importa, ya que se detiene al colisionar
-        //{
-        //    if (navMeshAgent.isOnNavMesh)
-        //    {
-        //        Vector3 targetPosition = nearestTarget.transform.position;
-        //        navMeshAgent.SetDestination(targetPosition);
-        //    }
-        //}
-        //}
-    }
-    void GetAllTargets()
-    {
-        this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).ToList();
-        if (this.gameObject.CompareTag(targetTag))
-        {
-            this.allTargets.Remove(this.gameObject);
-        }
     }
 
     void GetOrderedTargets()
     {
-        this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList();
+        //this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList();
+        if (targetTag == "Hen") { this.allTargets = this.simulationManager.hensList.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList(); }
+        else if (targetTag == "Fox") { this.allTargets = this.simulationManager.foxesList.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList(); }
+        else if (targetTag == "BushResource") { this.allTargets = this.simulationManager.bushesList.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList(); }
+        else if (targetTag == "Water") { this.allTargets = this.simulationManager.waterTiles.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList(); }
+
         if (this.gameObject.CompareTag(targetTag))
         {
             this.allTargets.Remove(this.gameObject);
@@ -278,51 +247,11 @@ public class Animal : MonoBehaviour
         //SetTarget();
     }
 
-    List<GameObject> GetInRangeTargets()
-    {
-        List<GameObject> inRangeTargets = new List<GameObject>();
-
-        //Busca en la lista de todos los objetivos con el tag los que están dentro del rango
-        foreach (var target in this.allTargets)
-        {
-            float dist = Vector3.Distance(this.gameObject.transform.position, target.transform.position);
-            if(dist <= this.senseRange)
-            {
-                inRangeTargets.Add(target);
-            }
-        }
-
-        return inRangeTargets;
-    }
-
-    //Funcion que busca el target mas cercano de los diponibles      
-    void GetClosestTarget(List<GameObject> inRangeTargets)
-    {
-        foreach (GameObject target in inRangeTargets)
-        {
-            if (target != null)
-            {
-                float distance = Vector3.Distance(transform.position, target.transform.position);
-                if (distance <= senseRange)
-                {
-                    if (distance < this.minDist && target != null)
-                    {
-                        this.minDist = distance;
-                        this.nearestTarget = target;
-                    }
-                }
-            }
-        }
-    }
-
     //Función principal de espera tras una accion, que devuelve al animal al ciclo de busqueda de un ojbetivo
     IEnumerator Awaiter(float seconds)
     {
         yield return new WaitForSeconds(seconds);
-        //if (targetTag == null || targetTag == string.Empty) { this.gameObject.name = "Gallina"; }
-        //GetAllTargets();
         this.nearestTarget = null;
-        //this.minDist = Mathf.Infinity;
     }
 
     void Eat(Plant plant)
@@ -384,6 +313,11 @@ public class Animal : MonoBehaviour
         Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 
         GameObject newAnimal = Instantiate(this.gameObject, spawnPos, Quaternion.identity, animalContainer.transform);
+        newAnimal.GetComponent<Animal>().SetDeathManager(deathManager);
+        newAnimal.GetComponent<Animal>().SetSimulationManager(simulationManager);
+
+        if (newAnimal.CompareTag("Hen")) { simulationManager.AddHen(newAnimal); }
+        else { simulationManager.AddFox(newAnimal); }
 
         float newSpeed = (this.speed + this.mate.speed + Random.Range(-0.5f, 0.5f)) / 2f;
 
@@ -546,22 +480,6 @@ public class Animal : MonoBehaviour
         }
     }
 
-    // Para activar y desactivar el Animator
-    //private void OnBecameInvisible()
-    //{
-    //    if(animator != null)
-    //    {
-    //        animator.enabled = false;
-    //    }
-    //}
-
-    //private void OnBecameVisible()
-    //{
-    //    if (animator != null)
-    //    {
-    //        animator.enabled = true;
-    //    }
-    //}
 }
 
 public enum Actions

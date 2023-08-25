@@ -8,6 +8,7 @@ public class DeathManager : MonoBehaviour
     [SerializeField] private int thirst;
     [SerializeField] private int starvation;
     [SerializeField] private int devoured;
+    [SerializeField] private Simulation simulationManager;
 
     private void Start()
     {
@@ -23,6 +24,8 @@ public class DeathManager : MonoBehaviour
     public void Die(GameObject animal, CauseOfDeath causeOfDeath)
     {
         Destroy(animal);
+        if (animal.CompareTag("Hen")) { simulationManager.RemoveHen(animal); }
+        else{ simulationManager.RemoveFox(animal); }
         switch (causeOfDeath)
         {
             case CauseOfDeath.THIRST: thirst++; break;
@@ -34,12 +37,8 @@ public class DeathManager : MonoBehaviour
     public void FallDie(GameObject animal)
     {
         Destroy(animal);
+        if(animal.CompareTag("Hen")) { simulationManager.RemoveHen(animal); }
+        else { simulationManager.RemoveFox(animal); }
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    Debug.Log("Destruido por el death manager");
-    //    Destroy(other.gameObject);
-    //}
 }
 

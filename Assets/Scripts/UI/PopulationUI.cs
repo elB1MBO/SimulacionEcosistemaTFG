@@ -27,8 +27,8 @@ public class PopulationUI : MonoBehaviour
     // Update is called once per frame
     void UpdateValues()
     {
-        this.henPopulationNumber.text = GameObject.FindGameObjectsWithTag("Hen").Length.ToString();
-        this.foxPopulationNumber.text = GameObject.FindGameObjectsWithTag("Fox").Length.ToString();
+        this.henPopulationNumber.text = simulator.hensList.Count.ToString();
+        this.foxPopulationNumber.text = simulator.foxesList.Count.ToString();
         this.averageHenSpeed.text = simulator.averageHenSpeed.ToString();
         this.averageFoxSpeed.text = simulator.averageFoxSpeed.ToString();
         this.thirstDeaths.text = deathManager.GetDeathsByThirst().ToString();

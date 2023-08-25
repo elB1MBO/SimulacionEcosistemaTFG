@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -20,28 +21,61 @@ public class Simulation : MonoBehaviour
 
     public float averageHenSpeed = 0f;
     public float averageFoxSpeed = 0f;
+
+    public GameObject[] waterTiles; // Los tiles son estáticos? 
+    public List<GameObject> bushesList;
+    public List<GameObject> hensList;
+    public List<GameObject> foxesList;
+
     // Start is called before the first frame update
     void Start()
     {
         Application.targetFrameRate = 200;
-        //Spawn x hens at random positions
-        for (int i = 0; i < startHenNumber; i++)
-        {
-            GameObject newHen = Instantiate(Hen, new Vector3(Random.Range(30f, 50f), 1, Random.Range(30f, 50f)), Quaternion.Euler(0, 0, 0), HenContainer.transform);
-            newHen.GetComponent<Animal>().SetAnimalContainer(HenContainer);
-            newHen.GetComponent<Animal>().SetDeathManager(deathManager);
-        }
 
-        //Spawn x foxes at random positions
-        for (int i = 0; i < startFoxNumber; i++)
-        {
-            GameObject newFox = Instantiate(Fox, new Vector3(Random.Range(30f, 50f), 1, Random.Range(30f, 50f)), Quaternion.Euler(0, 0, 0), FoxContainer.transform);
-            newFox.GetComponent<Animal>().SetAnimalContainer(FoxContainer);
-            newFox.GetComponent<Animal>().SetDeathManager(deathManager);
-        }
+        bushesList  = new List<GameObject>();
+        hensList    = new List<GameObject>();
+        foxesList   = new List<GameObject>();
+
+        UpdateBushes();
+        UpdateWaterTilesList();
 
         InvokeRepeating(nameof(CalculateAverageSpeed), 0f, 1f);
-        //InvokeRepeating(nameof(SaveData), 0f, 1f);
+    }
+
+    //Cada función se llamará cuando se cree o borre un objeto correspondiente a su etiqueta
+    public void AddBush(GameObject bush)
+    {
+        bushesList.Add(bush);
+    }
+    public void RemoveBush(GameObject bush)
+    {
+        bushesList.Remove(bush);
+    }
+    public void AddHen(GameObject hen)
+    {
+        hensList.Add(hen);
+    }
+    public void RemoveHen(GameObject hen)
+    {
+        hensList.Remove(hen);
+    }
+    public void AddFox(GameObject fox)
+    {
+        foxesList.Add(fox);
+    }
+    public void RemoveFox(GameObject fox)
+    {
+        foxesList.Remove(fox);
+    }
+
+    //Para evitar aglomeraciones, se debe ir comprobando si no están a Full
+    private void UpdateBushes()
+    {
+        bushesList = GameObject.FindGameObjectsWithTag("BushResource").ToList();
+    }
+    void UpdateWaterTilesList()
+    {
+        waterTiles = GameObject.FindGameObjectsWithTag("Water");
     }
 
     // Update is called once per frame
@@ -66,6 +100,8 @@ public class Simulation : MonoBehaviour
                 Time.timeScale = 0;
             }
         }
+
+        UpdateBushes();
     }
 
     void CalculateAverageSpeed()
@@ -88,18 +124,4 @@ public class Simulation : MonoBehaviour
         }
         if(foxesNum > 0) { averageFoxSpeed = totalSpeeds / foxesNum; }
     }
-
-    void SaveData()
-    {
-        using (StreamWriter writerH = new("Assets/Data/hens.txt", true))
-        {
-            writerH.WriteLine(GameObject.FindGameObjectsWithTag("Hen").Length.ToString());
-        }
-
-        using (StreamWriter writerF = new("Assets/Data/foxes.txt", true))
-        {
-            writerF.WriteLine(GameObject.FindGameObjectsWithTag("Fox").Length.ToString());
-        }
-    }
-    
 }
