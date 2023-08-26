@@ -89,6 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   senseRange: 10
+  senseRangeSquare: 0
   targetTag: Water
   allTargets: []
   nearestTarget: {fileID: 0}
@@ -102,6 +103,7 @@ MonoBehaviour:
   reproduceParticleSystem: {fileID: 3028516302818309072}
   model: {fileID: 2392210309248763591}
   deathManager: {fileID: 0}
+  simulationManager: {fileID: 0}
 --- !u!136 &2391717790309714697
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -140,7 +142,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2391717790309714696}
   serializedVersion: 8
-  lengthInSec: 2
+  lengthInSec: 1
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -700,7 +702,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 20
+    maxNumParticles: 10
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -768,7 +770,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: -90, y: 0, z: 0}
-    m_Scale: {x: 1, y: 1, z: 1}
+    m_Scale: {x: 0.5, y: 0.5, z: 0.5}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0

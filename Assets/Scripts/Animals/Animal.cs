@@ -88,13 +88,14 @@ public class Animal : MonoBehaviour
         reproduceUrgeBar.UpdateValueBar(maxPropValue, currentReproduceUrge);
         
         InvokeRepeating(nameof(GetOrderedTargets), 0f, 1f);
+
         StartCoroutine(Awaiter(waitTime));
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(transform.position.y < -10f) { deathManager.FallDie(gameObject); }
+        //if(transform.position.y < -10f) { deathManager.FallDie(gameObject); }
 
         SetTarget();
 
@@ -117,8 +118,7 @@ public class Animal : MonoBehaviour
         if (this.navMeshAgent == null || !this.navMeshAgent.enabled) { return; }
 
         // Huye del depredador más cercano
-        //predator = GameObject.FindGameObjectsWithTag("Fox").OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).FirstOrDefault();
-        //predator = this.simulationManager.foxesArray.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).FirstOrDefault();
+        if(this.simulationManager.foxesList.Count == 0) { return; }
         predator = this.simulationManager.foxesList.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).FirstOrDefault();
         if (predator != null)
         {
@@ -138,13 +138,17 @@ public class Animal : MonoBehaviour
     {
         switch (currentAction)
         {
-            case Actions.EATING: Eat(this.plantTarget); break;
+            case Actions.EATING: if (this.plantTarget != null) { Eat(this.plantTarget); } break;
             case Actions.DRINKING: Drink(); break;
             case Actions.MATING: Reproduce(); break;
             default: {
                     currentHunger += energyWasteValue * Time.timeScale; 
                     currentThirst += energyWasteValue * Time.timeScale; 
-                    if (currentReproduceUrge < maxPropValue) { currentReproduceUrge += energyWasteValue * Time.timeScale; } 
+                    if (currentReproduceUrge < maxPropValue) 
+                    {
+                        if (gameObject.CompareTag("Fox")) { currentReproduceUrge += energyWasteValue * 0.5f * Time.timeScale; }
+                        else { currentReproduceUrge += energyWasteValue * Time.timeScale; }
+                    } 
                 } break;
         }
 
@@ -234,7 +238,6 @@ public class Animal : MonoBehaviour
 
     void GetOrderedTargets()
     {
-        //this.allTargets = GameObject.FindGameObjectsWithTag(targetTag).OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList();
         if (targetTag == "Hen") { this.allTargets = this.simulationManager.hensList.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList(); }
         else if (targetTag == "Fox") { this.allTargets = this.simulationManager.foxesList.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList(); }
         else if (targetTag == "BushResource") { this.allTargets = this.simulationManager.bushesList.OrderBy(o => (o.transform.position - transform.position).sqrMagnitude).ToList(); }
@@ -256,9 +259,10 @@ public class Animal : MonoBehaviour
 
     void Eat(Plant plant)
     {
+        if (this.transform == null) { return; }
         navMeshAgent.SetDestination(this.transform.position);
         //Si se encuentra con una planta, hay que decirle al navigation que el nuevo objetivo es la posición actual, para que no se coloque en el centro de la planta:
-        nearestTarget = this.gameObject; // -------> IMPORTANTE
+        //nearestTarget = this.gameObject;
 
         if (plant.IsEdible() && this.currentHunger > 1)
         {
@@ -275,9 +279,10 @@ public class Animal : MonoBehaviour
 
     void Drink()
     {
+        if(this.transform == null) { return; }
         navMeshAgent.SetDestination(this.transform.position);
         //Si se encuentra con una planta, hay que decirle al navigation que el nuevo objetivo es la posición actual, para que no se coloque en el centro de la planta:
-        nearestTarget = this.gameObject; // -------> IMPORTANTE
+        //nearestTarget = this.gameObject;
         if (currentThirst > 1)
         {
             currentThirst -= energyRestoreValue * 2 * Time.timeScale;
@@ -310,20 +315,24 @@ public class Animal : MonoBehaviour
 
     void SpawnAnimal()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y, transform.position.z); //Position i want to spawn it
 
-        GameObject newAnimal = Instantiate(this.gameObject, spawnPos, Quaternion.identity, animalContainer.transform);
-        newAnimal.GetComponent<Animal>().SetDeathManager(deathManager);
-        newAnimal.GetComponent<Animal>().SetSimulationManager(simulationManager);
+        NavMeshHit closestHit;
+        if(NavMesh.SamplePosition(spawnPos, out closestHit, 100, 1))
+        {
+            GameObject newAnimal = Instantiate(this.gameObject, closestHit.position, Quaternion.identity, animalContainer.transform);
+            newAnimal.GetComponent<Animal>().SetDeathManager(deathManager);
+            newAnimal.GetComponent<Animal>().SetSimulationManager(simulationManager);
 
-        if (newAnimal.CompareTag("Hen")) { simulationManager.AddHen(newAnimal); }
-        else { simulationManager.AddFox(newAnimal); }
+            if (newAnimal.CompareTag("Hen")) { simulationManager.AddHen(newAnimal); }
+            else { simulationManager.AddFox(newAnimal); }
 
-        float newSpeed = (this.speed + this.mate.speed + Random.Range(-0.5f, 0.5f)) / 2f;
+            float newSpeed = (this.speed + this.mate.speed + Random.Range(-0.5f, 0.5f)) / 2f;
 
-        newAnimal.GetComponentInChildren<Animal>().speed = newSpeed;
+            newAnimal.GetComponentInChildren<Animal>().speed = newSpeed;
 
-        SetColor(newAnimal, newSpeed);
+            SetColor(newAnimal, newSpeed);
+        } else { Debug.Log("Algo ha fallado al crear animal nuevo"); }
     }
 
     void SetColor(GameObject animal, float speed)
