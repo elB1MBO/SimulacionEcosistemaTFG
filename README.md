@@ -4,8 +4,4 @@ Simulacion de un ecosistema - TFG Raul Duran
 El código principal está en la rama SIMULATOR.
 
 Resumen: 
-El objetivo del proyecto es simular un ecosistema y hacerlo de manera interactiva. En el ecosistema tendremos presas y depredadores, de manera que podremos estudiar la supervivencia de cada uno dependiendo de factores que podemos alterar, como puede ser el número de depredadores iniciales, número de presas, o el propio entorno, cambiando el número de recursos (agua, comida) o el mapa, generado de manera procedimental.
-Herramientas que utilizaré durante el desarrollo del proyecto:
-La herramienta principal será el motor gráfico de videojuegos Unity3D (que utiliza el lenguaje C#). Para el desarrollo y gestión usaré Visual Studio Code, Github y Trello.
-
-Modelos 3D: Algunos los haré yo, usando la herramienta Blender, y otros serán descargados de la Assets Store de Unity.
+En este Trabajo de Fin de Grado (TFG) se presenta un simulador desarrollado en el motor gráfico Unity3D, el cual consiste en un pequeño ecosistema donde las especias que pertenecen a él deben sobrevivir. Para ello, deben buscar fuentes de alimento y reproducirse. Al igual que en la vida real, hay presas y depredadores, ambos luchando por sobrevivir. También existe un sistema de evolución, por el cual cuando se reproducen, la descendencia adquiere ciertos genes, como son la velocidad y el gasto de energía. Esto, sumado a que se trata de un simulador interactivo, en el que podremos modificar el ecosistema en tiempo real, nos permitirá estudiar cómo cambia este ecosistema en cada ejecución, y qué atributos priorizan los seres vivos para su supervivencia.
